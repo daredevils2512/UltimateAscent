@@ -45,13 +45,16 @@ public:
 			Wait(0.005);				// wait for a motor update time
 		}
 	}
+	
+private:
+	void Shoot();
 };
 
 const double startSpeed = 2000000; //This is the actual speed we want, DO NOT CHANGE
 
-RobotDemo::Shoot() {
+void RobotDemo::Shoot() {
 	double currentSpeed = 0;
-	double desiredSpeed = 0;
+	static double desiredSpeed = 0;
 	
 	if (stick2.GetRawButton(FLYWHEEL_ON)) { // Buttons have been initialized.
 		desiredSpeed = startSpeed;

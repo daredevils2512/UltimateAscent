@@ -1,8 +1,8 @@
 #include "WPILib.h"
 
-DigitalInput flywheelLightSensor;
+DigitalInput *flywheelLightSensor;
 Timer flywheelStopwatch;
-PIDController flywheelSpeed;
+PIDController *flywheelSpeed;
 static const UINT32 FLYWHEEL_ON = 8;
 static const UINT32 FLYWHEEL_OFF = 9;
 
@@ -15,21 +15,24 @@ class FlywheelEncoder {
 private:	
 	
 	int rate;
-	const double period = 0.5;
+	static const double period;
 	int flywheelCounter;
+	int rotationsPerPeriod;
 	
 public:
 	
-	FlywheelEncoder () { //Default Constructer, initializzes thinz to zero
+	//Default Constructer, initializzes thinz to zero
+	FlywheelEncoder () {
 		rate = 0;
 		flywheelCounter = 0;
 		flywheelStopwatch.Reset();
 		flywheelStopwatch.Start();
 	}
 	
-	int periodCounter () { // Counts number of rotations per period
+	// Counts number of rotations per period
+	int periodCounter () {
 		if (flywheelStopwatch.Get() >= period) {
-			int rotationsPerPeriod = flywheelCounter;
+			rotationsPerPeriod = flywheelCounter;
 			flywheelCounter = 0;
 			flywheelStopwatch.Reset();
 			flywheelStopwatch.Start();
@@ -37,11 +40,18 @@ public:
 		return rotationsPerPeriod;
 	}
 	
-	double getRate () { // Sets rate to rpm
-		if (flywheelLightSensor.Get() == true) { // Counts rotations
+	double getRate () {
+		// Counts rotations with rising edge detector
+		bool currentLightValue = flywheelLightSensor->Get();
+		static bool previousLightValue = false;
+		if (currentLightValue == true && previousLightValue == false) {
 			flywheelCounter++;
 		}
-		rate = periodCounter () * 120; // change to rpm (60/.5)
+		previousLightValue = currentLightValue;
+		// Change periods(0.5s) to rpm(1 min)
+		rate = periodCounter () * 120;
 		return rate;
 	}
 };
+
+const double FlywheelEncoder::period = 0.5;
