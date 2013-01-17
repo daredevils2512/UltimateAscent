@@ -46,39 +46,8 @@ void	RobotDemo::OperatorControl(void)
 		myRobot.SetSafetyEnabled(true);
 		while (IsOperatorControl())
 		{
-			//Drive
-			
-			float xOutput = ConvertAxis(stick1.GetX());
-			float yOutput = ConvertAxis(stick1.GetY());
-			float twistOutput = ConvertAxis(stick1.GetTwist());
-			
-			if (stick1.GetRawButton(GRIPPIES_DOWN_BUTTON)){
-				xOutput = 0;
-				solenoid1.Set(true);
-				solenoid2.Set(true);
-			}
-			else{
-				solenoid1.Set(false);
-				solenoid2.Set(false);				
-			}
-			myRobot.MecanumDrive_Cartesian(xOutput, yOutput, twistOutput); // drive with arcade style (use right stick)
-			
-			//Scoop
-			
-			static bool scoopState = false;
-			static bool previousScoopButton = false;
-			
-			bool currentScoopButton = stick1.GetRawButton(SCOOP_BUTTON);
-			if (currentScoopButton == true && previousScoopButton == false){
-				if (scoopState == true){
-					scoopState = false;
-				}
-				else{
-					scoopState = true;
-				}
-			}
-			scoopSolenoid.Set(scoopState);
-			previousScoopButton = currentScoopButton;
+			Drive();
+			Scoop();
 		}
 	}
 
@@ -98,6 +67,40 @@ float RobotDemo::ConvertAxis(float input){
 	else {
 		return 0;
 	}
+}
+
+void RobotDemo::Drive(){
+	float xOutput = ConvertAxis(stick1.GetX());
+	float yOutput = ConvertAxis(stick1.GetY());
+	float twistOutput = ConvertAxis(stick1.GetTwist());
+	
+	if (stick1.GetRawButton(GRIPPIES_DOWN_BUTTON)){
+		xOutput = 0;
+		solenoid1.Set(true);
+		solenoid2.Set(true);
+	}
+	else{
+		solenoid1.Set(false);
+		solenoid2.Set(false);				
+	}
+	myRobot.MecanumDrive_Cartesian(xOutput, yOutput, twistOutput); // drive with arcade style (use right stick)
+}
+
+void RobotDemo::Scoop(){
+	static bool scoopState = false;
+	static bool previousScoopButton = false;
+	
+	bool currentScoopButton = stick1.GetRawButton(SCOOP_BUTTON);
+	if (currentScoopButton == true && previousScoopButton == false){
+		if (scoopState == true){
+			scoopState = false;
+		}
+		else{
+			scoopState = true;
+		}
+	}
+	scoopSolenoid.Set(scoopState);
+	previousScoopButton = currentScoopButton;
 }
 
 const double startSpeed = 200;

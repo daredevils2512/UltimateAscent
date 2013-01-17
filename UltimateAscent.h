@@ -60,5 +60,9 @@ public:
 	
 	void Test();
 	
-	void Shoot();
+	void Shoot();	
+	
+	void Drive();
+	
+	void Scoop();
 };
