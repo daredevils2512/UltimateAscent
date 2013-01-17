@@ -1,9 +1,5 @@
 #include "WPILib.h"
 
-DigitalInput *flywheelLightSensor;
-Timer flywheelStopwatch;
-PIDController *flywheelSpeed;
-
 
 /* This class counts how many times the flywheel has turned during a period
  * custom made for one-click-encoder
@@ -12,6 +8,10 @@ PIDController *flywheelSpeed;
 class FlywheelEncoder:PIDSource {
 	
 private:	
+
+	DigitalInput *flywheelLightSensor;
+	Timer flywheelStopwatch;
+	PIDController *flywheelSpeed;
 	
 	int rate;
 	static const double period;
@@ -20,40 +20,17 @@ private:
 	
 public:
 	//Default Constructer, initializzes thinz to zero
-	FlywheelEncoder () {
-		rate = 0;
-		flywheelCounter = 0;
-		flywheelStopwatch.Reset();
-		flywheelStopwatch.Start();
-	}
+	FlywheelEncoder ();
+	
+	//Destructor
+	virtual ~FlywheelEncoder(){}
 	
 	// Counts number of rotations per period
-	int periodCounter () {
-		if (flywheelStopwatch.Get() >= period) {
-			rotationsPerPeriod = flywheelCounter;
-			flywheelCounter = 0;
-			flywheelStopwatch.Reset();
-			flywheelStopwatch.Start();
-		}
-		return rotationsPerPeriod;
-	}
+	int PeriodCounter ();
 	
-	double getRate () {
-		// Counts rotations with rising edge detector
-		bool currentLightValue = flywheelLightSensor->Get();
-		static bool previousLightValue = false;
-		if (currentLightValue == true && previousLightValue == false) {
-			flywheelCounter++;
-		}
-		previousLightValue = currentLightValue;
-		// Change periods(0.5s) to rpm(1 min)
-		rate = periodCounter () * 120;
-		return rate;
-	}
+	// Counts rotations with rising edge detector
+	double GetRate ();
 	
-	virtual double PIDGet(){
-		return getRate();
-	}
+	//Inherited function for PID source recognition
+	virtual double PIDGet();
 };
-
-const double FlywheelEncoder::period = 0.5;
