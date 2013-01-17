@@ -3,14 +3,13 @@
 DigitalInput *flywheelLightSensor;
 Timer flywheelStopwatch;
 PIDController *flywheelSpeed;
-static const UINT32 FLYWHEEL_ON = 8;
-static const UINT32 FLYWHEEL_OFF = 9;
+
 
 /* This class counts how many times the flywheel has turned during a period
  * custom made for one-click-encoder
  */
 
-class FlywheelEncoder {
+class FlywheelEncoder:PIDSource {
 	
 private:	
 	
@@ -20,7 +19,6 @@ private:
 	int rotationsPerPeriod;
 	
 public:
-	
 	//Default Constructer, initializzes thinz to zero
 	FlywheelEncoder () {
 		rate = 0;
@@ -51,6 +49,10 @@ public:
 		// Change periods(0.5s) to rpm(1 min)
 		rate = periodCounter () * 120;
 		return rate;
+	}
+	
+	virtual double PIDGet(){
+		return getRate();
 	}
 };
 
