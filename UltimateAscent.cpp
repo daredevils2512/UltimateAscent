@@ -18,6 +18,9 @@ RobotDemo::RobotDemo(void):
 		solenoid1(SOLENOID1_SIDECAR, SOLENOID1_PWM),
 		solenoid2(SOLENOID2_SIDECAR, SOLENOID2_PWM),
 		scoopSolenoid(SCOOP_SOLENOID_SIDECAR, SCOOP_SOLENOID_PWM),
+		flywheelLightSensor(FLWYHEEL_LIGHT_SENSOR_SIDECAR, FLYWHEEL_LIGHT_SENSOR_PWM),
+		flywheel(flywheelLightSensor),
+//		flywheelSpeed(0,0,0,flywheel),//TODO:Unfinished
 		myRobot(&frontLeftMotor, &frontRightMotor, &rearLeftMotor, &rearRightMotor),	// these must be initialized in the same order
 		stick1(1),		// as they are declared above.
 		stick2(2)

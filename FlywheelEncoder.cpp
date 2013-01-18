@@ -3,7 +3,9 @@
 
 const double FlywheelEncoder::period = 0.5;
 
-FlywheelEncoder::FlywheelEncoder(){
+FlywheelEncoder::FlywheelEncoder(DigitalInput &lightSensor):
+	flywheelLightSensor(lightSensor)
+{
 	rate = 0;
 	flywheelCounter = 0;
 	flywheelStopwatch.Reset();
@@ -21,7 +23,7 @@ int FlywheelEncoder::PeriodCounter(){
 }
 
 double FlywheelEncoder::GetRate(){
-	bool currentLightValue = flywheelLightSensor->Get();
+	bool currentLightValue = flywheelLightSensor.Get();
 	static bool previousLightValue = false;
 	if (currentLightValue == true && previousLightValue == false) {
 		flywheelCounter++;

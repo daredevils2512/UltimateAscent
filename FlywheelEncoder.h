@@ -9,9 +9,8 @@ class FlywheelEncoder:PIDSource {
 	
 private:	
 
-	DigitalInput *flywheelLightSensor;
+	DigitalInput &flywheelLightSensor;
 	Timer flywheelStopwatch;
-	PIDController *flywheelSpeed;
 	
 	int rate;
 	static const double period;
@@ -20,7 +19,7 @@ private:
 	
 public:
 	//Default Constructer, initializzes thinz to zero
-	FlywheelEncoder ();
+	FlywheelEncoder (DigitalInput &lightSensor);
 	
 	//Destructor
 	virtual ~FlywheelEncoder(){}
