@@ -1,5 +1,6 @@
 #include "WPILib.h"
 #include "FlywheelEncoder.h"
+#include "FlywheelMotor.h"
 
 class RobotDemo : public SimpleRobot
 {
@@ -18,6 +19,7 @@ class RobotDemo : public SimpleRobot
 	static const UINT8 SOLENOID2_SIDECAR = SOLENOID_SIDECAR_1;
 	static const UINT8 SCOOP_SOLENOID_SIDECAR = SOLENOID_SIDECAR_1;
 	static const UINT8 FLWYHEEL_LIGHT_SENSOR_SIDECAR = DIGITAL_SIDECAR_1;
+	static const UINT8 FLYWHEEL_MOTOR_SIDECAR = DIGITAL_SIDECAR_1;
 	
 	//PWM list
 	static const UINT32 FRONT_LEFT_MOTOR_PWM = 1;
@@ -28,6 +30,7 @@ class RobotDemo : public SimpleRobot
 	static const UINT32 SOLENOID2_PWM = 2;
 	static const UINT32 SCOOP_SOLENOID_PWM = 3;
 	static const UINT32 FLYWHEEL_LIGHT_SENSOR_PWM = 5;
+	static const UINT32 FLYWHEEL_MOTOR_PWM = 6;
 	
 	//Buttons
 	
@@ -44,12 +47,14 @@ class RobotDemo : public SimpleRobot
 	Talon frontRightMotor;
 	Talon rearLeftMotor;
 	Talon rearRightMotor;
+	Talon flywheelMotor;
 	Solenoid solenoid1;
 	Solenoid solenoid2;
 	Solenoid scoopSolenoid;
 	DigitalInput flywheelLightSensor;
-	FlywheelEncoder flywheel;
-//	PIDController flywheelSpeed;
+	FlywheelEncoder flywheelEncoder;
+	FlywheelMotor pidOutput;
+	PIDController flywheelSpeed;
 	RobotDrive myRobot; // robot drive system
 	Joystick stick1; // only joystick
 	Joystick stick2;

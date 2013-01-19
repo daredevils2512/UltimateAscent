@@ -5,7 +5,7 @@
  * custom made for one-click-encoder
  */
 
-class FlywheelEncoder:PIDSource {
+class FlywheelEncoder:public PIDSource {
 	
 private:	
 
