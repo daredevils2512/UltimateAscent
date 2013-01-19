@@ -3,11 +3,12 @@
 class FlywheelMotor:public PIDOutput {
 	
 private:
-
-public:
-	FlywheelMotor();
+Talon *flywheelMotor;
 	
-	virtual ~FlywheelMotor();
+public:
+	FlywheelMotor(Talon &motor);
+	
+	virtual ~FlywheelMotor(){}
 	
 	virtual void PIDWrite(float output);
 };

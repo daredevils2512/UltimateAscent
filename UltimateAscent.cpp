@@ -21,7 +21,7 @@ RobotDemo::RobotDemo(void):
 		scoopSolenoid(SCOOP_SOLENOID_SIDECAR, SCOOP_SOLENOID_PWM),
 		flywheelLightSensor(FLWYHEEL_LIGHT_SENSOR_SIDECAR, FLYWHEEL_LIGHT_SENSOR_PWM),
 		flywheelEncoder(flywheelLightSensor),
-		pidOutput(),
+		pidOutput(flywheelMotor),
 		flywheelSpeed(0, 0, 0, &flywheelEncoder, &pidOutput),//TODO:Unfinished
 		myRobot(&frontLeftMotor, &frontRightMotor, &rearLeftMotor, &rearRightMotor),	// these must be initialized in the same order
 		stick1(1),		// as they are declared above.
