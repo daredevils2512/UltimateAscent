@@ -2,7 +2,7 @@
 #include "FlywheelEncoder.h"
 #include "FlywheelMotor.h"
 
-class RobotDemo : public SimpleRobot
+class UltimateAscent : public SimpleRobot
 {
 	//SideCar Constants
 	static const UINT8 DIGITAL_SIDECAR_1 = 1;
@@ -62,7 +62,7 @@ class RobotDemo : public SimpleRobot
 	float ConvertAxis(float input);
 	
 public:
-	RobotDemo(void);
+	UltimateAscent(void);
 
 	void Autonomous();
 

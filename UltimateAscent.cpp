@@ -1,15 +1,8 @@
-#include "cmath"
+#include <cmath>
 #include "UltimateAscent.h"
 
-
-/**
- * This is a demo program showing the use of the RobotBase class.
- * The SimpleRobot class is the base of a robot application that will automatically call your
- * Autonomous and OperatorControl methods at the right time as controlled by the switches on
- * the driver station or the field controls.
- */ 
-
-RobotDemo::RobotDemo(void):
+UltimateAscent::UltimateAscent(void):
+		// these must be initialized in the same order as they are declared in the header file.
 		timer(),
 		frontLeftMotor(FRONT_LEFT_MOTOR_SIDECAR, FRONT_LEFT_MOTOR_PWM),
 		frontRightMotor(FRONT_RIGHT_MOTOR_SIDECAR, FRONT_RIGHT_MOTOR_PWM),
@@ -23,8 +16,8 @@ RobotDemo::RobotDemo(void):
 		flywheelEncoder(flywheelLightSensor),
 		pidOutput(flywheelMotor),
 		flywheelSpeed(0, 0, 0, &flywheelEncoder, &pidOutput),//TODO:Unfinished
-		myRobot(&frontLeftMotor, &frontRightMotor, &rearLeftMotor, &rearRightMotor),	// these must be initialized in the same order
-		stick1(1),		// as they are declared above.
+		myRobot(&frontLeftMotor, &frontRightMotor, &rearLeftMotor, &rearRightMotor),
+		stick1(1),
 		stick2(2)
 	{
 		myRobot.SetExpiration(0.1);
@@ -35,7 +28,7 @@ RobotDemo::RobotDemo(void):
 	/**
 	 * Drive left & right motors for 2 seconds then stop
 	 */
-void RobotDemo::Autonomous(void)
+void UltimateAscent::Autonomous(void)
 	{
 		myRobot.SetSafetyEnabled(false);
 		myRobot.Drive(-0.5, 0.0); 	// drive forwards half speed
@@ -46,7 +39,7 @@ void RobotDemo::Autonomous(void)
 	/**
 	 * Runs the motors with arcade steering. 
 	 */
-void	RobotDemo::OperatorControl(void)
+void	UltimateAscent::OperatorControl(void)
 	{
 		myRobot.SetSafetyEnabled(true);
 		while (IsOperatorControl())
@@ -59,10 +52,10 @@ void	RobotDemo::OperatorControl(void)
 /**
  * Runs during test mode
  */
-void RobotDemo::Test() {
+void UltimateAscent::Test() {
 
 }
-float RobotDemo::ConvertAxis(float input){
+float UltimateAscent::ConvertAxis(float input){
 	if (input >= 0.05) {
 		return pow((input*0.75f), 2);
 	}
@@ -74,7 +67,7 @@ float RobotDemo::ConvertAxis(float input){
 	}
 }
 
-void RobotDemo::Drive(){
+void UltimateAscent::Drive(){
 	float xOutput = ConvertAxis(stick1.GetX());
 	float yOutput = ConvertAxis(stick1.GetY());
 	float twistOutput = ConvertAxis(stick1.GetTwist());
@@ -91,7 +84,7 @@ void RobotDemo::Drive(){
 	myRobot.MecanumDrive_Cartesian(xOutput, yOutput, twistOutput); // drive with arcade style (use right stick)
 }
 
-void RobotDemo::Scoop(){
+void UltimateAscent::Scoop(){
 	static bool scoopState = false;
 	static bool previousScoopButton = false;
 	
@@ -110,7 +103,7 @@ void RobotDemo::Scoop(){
 
 const double startSpeed = 200;
 
-void RobotDemo::Shoot() {
+void UltimateAscent::Shoot() {
 //	double currentSpeed = 0;
 	static double desiredSpeed = 0;
 	
@@ -123,5 +116,5 @@ void RobotDemo::Shoot() {
 }
 
 
-START_ROBOT_CLASS(RobotDemo);
+START_ROBOT_CLASS(UltimateAscent);
 
