@@ -20,8 +20,12 @@ class RobotDemo : public SimpleRobot
 	static const UINT8 SCOOP_SOLENOID_SIDECAR = SOLENOID_SIDECAR_1;
 	static const UINT8 FLWYHEEL_LIGHT_SENSOR_SIDECAR = DIGITAL_SIDECAR_1;
 	static const UINT8 FLYWHEEL_MOTOR_SIDECAR = DIGITAL_SIDECAR_1;
+	static const UINT8 LAUNCHER_IN_SIDECAR = SOLENOID_SIDECAR_1;
+	static const UINT8 LAUNCHER_OUT_SIDECAR = SOLENOID_SIDECAR_1;
 	
 	//PWM list
+	static const UINT32 LAUNCHER_IN_PWM = 3;
+	static const UINT32 LAUNCHER_OUT_PWM = 2;
 	static const UINT32 FRONT_LEFT_MOTOR_PWM = 1;
 	static const UINT32 FRONT_RIGHT_MOTOR_PWM = 2;
 	static const UINT32 REAR_LEFT_MOTOR_PWM = 3;
@@ -30,17 +34,21 @@ class RobotDemo : public SimpleRobot
 	static const UINT32 SOLENOID2_PWM = 2;
 	static const UINT32 SCOOP_SOLENOID_PWM = 3;
 	static const UINT32 FLYWHEEL_LIGHT_SENSOR_PWM = 5;
-	static const UINT32 FLYWHEEL_MOTOR_PWM = 6;
+	static const UINT32 FLYWHEEL_MOTOR_PWM = 6;	
 	
 	//Buttons
-	
+	static const UINT32 FIRE_BUTTON = 1;
 	static const int GRIPPIES_DOWN_BUTTON = 2;
 	static const int FLYWHEEL_ON_BUTTON = 9;
 	static const int FLYWHEEL_OFF_BUTTON = 6;
 	static const int SCOOP_BUTTON = 7;
 	
 	//VARIABLES
-
+	bool launcherOutSet;
+	bool launcherInSet;
+	bool waitForLeaving;
+	bool button1;
+	bool fireButton;
 	
 	Timer timer;
 	Talon frontLeftMotor;
@@ -51,8 +59,11 @@ class RobotDemo : public SimpleRobot
 	Solenoid solenoid1;
 	Solenoid solenoid2;
 	Solenoid scoopSolenoid;
+	Solenoid launcherIn;
+	Solenoid launcherOut;
 	DigitalInput flywheelLightSensor;
 	FlywheelEncoder flywheelEncoder;
+	Timer stopwatch;
 	FlywheelMotor pidOutput;
 	PIDController flywheelSpeed;
 	RobotDrive myRobot; // robot drive system

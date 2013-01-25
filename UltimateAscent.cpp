@@ -10,6 +10,11 @@
  */ 
 
 RobotDemo::RobotDemo(void):
+		launcherOutSet(false),
+		launcherInSet(false),
+		waitForLeaving(true),
+		button1(false),
+		fireButton(false),
 		timer(),
 		frontLeftMotor(FRONT_LEFT_MOTOR_SIDECAR, FRONT_LEFT_MOTOR_PWM),
 		frontRightMotor(FRONT_RIGHT_MOTOR_SIDECAR, FRONT_RIGHT_MOTOR_PWM),
@@ -19,8 +24,11 @@ RobotDemo::RobotDemo(void):
 		solenoid1(SOLENOID1_SIDECAR, SOLENOID1_PWM),
 		solenoid2(SOLENOID2_SIDECAR, SOLENOID2_PWM),
 		scoopSolenoid(SCOOP_SOLENOID_SIDECAR, SCOOP_SOLENOID_PWM),
+		launcherIn(LAUNCHER_IN_SIDECAR, LAUNCHER_IN_PWM),
+		launcherOut(LAUNCHER_OUT_SIDECAR, LAUNCHER_OUT_PWM),
 		flywheelLightSensor(FLWYHEEL_LIGHT_SENSOR_SIDECAR, FLYWHEEL_LIGHT_SENSOR_PWM),
 		flywheelEncoder(flywheelLightSensor),
+		stopwatch(),
 		pidOutput(flywheelMotor),
 		flywheelSpeed(0, 0, 0, &flywheelEncoder, &pidOutput),//TODO:Unfinished
 		myRobot(&frontLeftMotor, &frontRightMotor, &rearLeftMotor, &rearRightMotor),	// these must be initialized in the same order
@@ -111,6 +119,43 @@ void RobotDemo::Scoop(){
 const double startSpeed = 200;
 
 void RobotDemo::Shoot() {
+
+	//Actuators
+	if (stick2.GetRawButton(FIRE_BUTTON) && !fireButton) {
+		stopwatch.Reset();
+		stopwatch.Start();
+		waitForLeaving = false;
+		button1 = true;
+	}
+	if (stopwatch.Get() >= 0.25 || waitForLeaving == true) {
+		if (stopwatch.Get() >= 0.5 || waitForLeaving == true) {
+			launcherOutSet = false;
+			launcherInSet = false;
+		}
+		else {
+			launcherOutSet = true;
+			launcherInSet = false;
+		}
+	}
+	else {
+		launcherOutSet = false;
+		launcherInSet = true;
+	}
+	launcherIn.Set(launcherInSet);
+	launcherOut.Set(launcherOutSet);
+	if (stopwatch.Get() >= 5) {
+		stopwatch.Stop();
+	}
+	//Makes 1 time button work
+	if (button1) {
+		fireButton = true;
+		button1 = false;
+	}
+	else {
+		fireButton = false;
+	}
+	
+	
 //	double currentSpeed = 0;
 	static double desiredSpeed = 0;
 	
@@ -120,6 +165,8 @@ void RobotDemo::Shoot() {
 	else if (stick2.GetRawButton(FLYWHEEL_OFF_BUTTON)) { // Buttons have been initialized.
 		desiredSpeed = 0;
 	}
+	
+	
 }
 
 
