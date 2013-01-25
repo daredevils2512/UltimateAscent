@@ -44,8 +44,7 @@ class RobotDemo : public SimpleRobot
 	static const int SCOOP_BUTTON = 7;
 	
 	//VARIABLES
-	bool launcherOutSet;
-	bool launcherInSet;
+	
 	bool waitForLeaving;
 	bool button1;
 	bool fireButton;

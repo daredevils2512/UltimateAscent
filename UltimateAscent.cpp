@@ -10,8 +10,6 @@
  */ 
 
 RobotDemo::RobotDemo(void):
-		launcherOutSet(false),
-		launcherInSet(false),
 		waitForLeaving(true),
 		button1(false),
 		fireButton(false),
@@ -129,20 +127,19 @@ void RobotDemo::Shoot() {
 	}
 	if (stopwatch.Get() >= 0.25 || waitForLeaving == true) {
 		if (stopwatch.Get() >= 0.5 || waitForLeaving == true) {
-			launcherOutSet = false;
-			launcherInSet = false;
+			launcherIn.Set(false);
+			launcherOut.Set(false);
 		}
 		else {
-			launcherOutSet = true;
-			launcherInSet = false;
+			launcherIn.Set(false);
+			launcherOut.Set(true);
 		}
 	}
 	else {
-		launcherOutSet = false;
-		launcherInSet = true;
+		launcherIn.Set(true);
+		launcherOut.Set(false);
 	}
-	launcherIn.Set(launcherInSet);
-	launcherOut.Set(launcherOutSet);
+	
 	if (stopwatch.Get() >= 5) {
 		stopwatch.Stop();
 	}
