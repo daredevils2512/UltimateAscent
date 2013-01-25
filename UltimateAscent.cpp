@@ -10,9 +10,6 @@
  */ 
 
 RobotDemo::RobotDemo(void):
-		waitForLeaving(true),
-		button1(false),
-		fireButton(false),
 		timer(),
 		frontLeftMotor(FRONT_LEFT_MOTOR_SIDECAR, FRONT_LEFT_MOTOR_PWM),
 		frontRightMotor(FRONT_RIGHT_MOTOR_SIDECAR, FRONT_RIGHT_MOTOR_PWM),
@@ -117,13 +114,16 @@ void RobotDemo::Scoop(){
 const double startSpeed = 200;
 
 void RobotDemo::Shoot() {
-
+	static bool waitForLeaving = true;
+	bool triggerButton = false;
+	static bool priorTriggerButton = false;
+	
 	//Actuators
-	if (stick2.GetRawButton(FIRE_BUTTON) && !fireButton) {
+	if (stick2.GetRawButton(FIRE_BUTTON) && !priorTriggerButton) {
 		stopwatch.Reset();
 		stopwatch.Start();
 		waitForLeaving = false;
-		button1 = true;
+		triggerButton = true;
 	}
 	if (stopwatch.Get() >= 0.25 || waitForLeaving == true) {
 		if (stopwatch.Get() >= 0.5 || waitForLeaving == true) {
@@ -144,12 +144,12 @@ void RobotDemo::Shoot() {
 		stopwatch.Stop();
 	}
 	//Makes 1 time button work
-	if (button1) {
-		fireButton = true;
-		button1 = false;
+	if (triggerButton) {
+		priorTriggerButton = true;
+		triggerButton = false;
 	}
 	else {
-		fireButton = false;
+		priorTriggerButton = false;
 	}
 	
 	

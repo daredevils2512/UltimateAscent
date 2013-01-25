@@ -45,10 +45,6 @@ class RobotDemo : public SimpleRobot
 	
 	//VARIABLES
 	
-	bool waitForLeaving;
-	bool button1;
-	bool fireButton;
-	
 	Timer timer;
 	Talon frontLeftMotor;
 	Talon frontRightMotor;
