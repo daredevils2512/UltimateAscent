@@ -12,6 +12,8 @@ UltimateAscent::UltimateAscent(void):
 		solenoid1(SOLENOID1_SIDECAR, SOLENOID1_PWM),
 		solenoid2(SOLENOID2_SIDECAR, SOLENOID2_PWM),
 		scoopSolenoid(SCOOP_SOLENOID_SIDECAR, SCOOP_SOLENOID_PWM),
+		launcherIn(LAUNCHER_IN_SIDECAR, LAUNCHER_IN_PMW),
+		launcherOut(LAUNCHER_OUT_SIDECAR, LAUNCHER_OUT_PMW),
 		flywheelLightSensor(FLWYHEEL_LIGHT_SENSOR_SIDECAR, FLYWHEEL_LIGHT_SENSOR_PWM),
 		flywheelEncoder(flywheelLightSensor),
 		pidOutput(flywheelMotor),
@@ -30,10 +32,39 @@ UltimateAscent::UltimateAscent(void):
 	 */
 void UltimateAscent::Autonomous(void)
 	{
-		myRobot.SetSafetyEnabled(false);
-		myRobot.Drive(-0.5, 0.0); 	// drive forwards half speed
-		Wait(2.0); 				//    for 2 seconds
-		myRobot.Drive(0.0, 0.0); 	// stop robot
+		GetWatchdog().SetEnabled(false);
+		
+		if (IsAutonomous ()) {
+			// Shoots first ball
+			launcherOut.Set(true);
+			launcherIn.Set(false);
+			// Leaves piston out for .25 seconds
+			Wait(0.25);
+			launcherIn.Set(true);
+			launcherOut.Set(false);
+			
+			// Waits 1.5 seconds until shooting again
+			Wait(1.5);
+			
+			// Shoots second ball
+			launcherOut.Set(true);
+			launcherIn.Set(false);
+			// Leaves piston out for .25 seconds
+			Wait(0.25);
+			launcherIn.Set(true);
+			launcherOut.Set(false);
+			
+			// Waits 1.5 seconds until shooting again
+			Wait(1.5);
+			
+			// Shoots third ball
+			launcherOut.Set(true);
+			launcherIn.Set(false);
+			// Leaves piston out for .25 seconds
+			Wait(0.25);
+			launcherIn.Set(true);
+			launcherOut.Set(false);
+		}
 	}
 
 	/**

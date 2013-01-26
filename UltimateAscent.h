@@ -38,6 +38,12 @@ class UltimateAscent : public SimpleRobot
 	// Flywheel Motor
 	static const UINT8 FLYWHEEL_MOTOR_SIDECAR = DIGITAL_SIDECAR_1;
 	static const UINT32 FLYWHEEL_MOTOR_PWM = 6;
+	// Launcher In
+	static const UINT8 LAUNCHER_IN_SIDECAR = SOLENOID_SIDECAR_1;
+	static const UINT32 LAUNCHER_IN_PMW = 3;
+	// Launcher Out
+	static const UINT8 LAUNCHER_OUT_SIDECAR = SOLENOID_SIDECAR_1;
+	static const UINT32 LAUNCHER_OUT_PMW = 2;
 	
 	//Buttons
 	
@@ -58,6 +64,8 @@ class UltimateAscent : public SimpleRobot
 	Solenoid solenoid1;
 	Solenoid solenoid2;
 	Solenoid scoopSolenoid;
+	Solenoid launcherIn;
+	Solenoid launcherOut;
 	DigitalInput flywheelLightSensor;
 	FlywheelEncoder flywheelEncoder;
 	FlywheelMotor pidOutput;
