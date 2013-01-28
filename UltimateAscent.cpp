@@ -35,6 +35,8 @@ void UltimateAscent::Autonomous(void)
 		GetWatchdog().SetEnabled(false);
 		
 		if (IsAutonomous ()) {
+			flywheelMotor.Set(1);
+			Wait (2);
 			// Shoots first ball
 			launcherOut.Set(true);
 			launcherIn.Set(false);
@@ -64,6 +66,8 @@ void UltimateAscent::Autonomous(void)
 			Wait(0.25);
 			launcherIn.Set(true);
 			launcherOut.Set(false);
+			
+			flywheelMotor.Set(0);
 		}
 	}
 
