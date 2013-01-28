@@ -2,7 +2,7 @@
 #include "FlywheelEncoder.h"
 #include "FlywheelMotor.h"
 
-class RobotDemo : public SimpleRobot
+class UltimateAscent : public SimpleRobot
 {
 	//SideCar Constants
 	static const UINT8 DIGITAL_SIDECAR_1 = 1;
@@ -11,30 +11,39 @@ class RobotDemo : public SimpleRobot
 	static const UINT8 SOLENOID_SIDECAR_1 = 1;
 	
 	//Sidecar list
+	// Front Left Motor
 	static const UINT8 FRONT_LEFT_MOTOR_SIDECAR = DIGITAL_SIDECAR_1;
-	static const UINT8 FRONT_RIGHT_MOTOR_SIDECAR = DIGITAL_SIDECAR_1;
-	static const UINT8 REAR_LEFT_MOTOR_SIDECAR = DIGITAL_SIDECAR_1;
-	static const UINT8 REAR_RIGHT_MOTOR_SIDECAR = DIGITAL_SIDECAR_1;
-	static const UINT8 SOLENOID1_SIDECAR = SOLENOID_SIDECAR_1;
-	static const UINT8 SOLENOID2_SIDECAR = SOLENOID_SIDECAR_1;
-	static const UINT8 SCOOP_SOLENOID_SIDECAR = SOLENOID_SIDECAR_1;
-	static const UINT8 FLWYHEEL_LIGHT_SENSOR_SIDECAR = DIGITAL_SIDECAR_1;
-	static const UINT8 FLYWHEEL_MOTOR_SIDECAR = DIGITAL_SIDECAR_1;
-	static const UINT8 LAUNCHER_IN_SIDECAR = SOLENOID_SIDECAR_1;
-	static const UINT8 LAUNCHER_OUT_SIDECAR = SOLENOID_SIDECAR_1;
-	
-	//PWM list
-	static const UINT32 LAUNCHER_IN_PWM = 3;
-	static const UINT32 LAUNCHER_OUT_PWM = 2;
 	static const UINT32 FRONT_LEFT_MOTOR_PWM = 1;
+	// Front Right Motor
+	static const UINT8 FRONT_RIGHT_MOTOR_SIDECAR = DIGITAL_SIDECAR_1;
 	static const UINT32 FRONT_RIGHT_MOTOR_PWM = 2;
+	// Rear Left Motor
+	static const UINT8 REAR_LEFT_MOTOR_SIDECAR = DIGITAL_SIDECAR_1;
 	static const UINT32 REAR_LEFT_MOTOR_PWM = 3;
+	// Rear Right Motor
+	static const UINT8 REAR_RIGHT_MOTOR_SIDECAR = DIGITAL_SIDECAR_1;
 	static const UINT32 REAR_RIGHT_MOTOR_PWM = 4;
+	// Solenoid 1
+	static const UINT8 SOLENOID1_SIDECAR = SOLENOID_SIDECAR_1;
 	static const UINT32 SOLENOID1_PWM = 1;
+	// Solenoid 2
+	static const UINT8 SOLENOID2_SIDECAR = SOLENOID_SIDECAR_1;
 	static const UINT32 SOLENOID2_PWM = 2;
+	// Scoop Solenoid
+	static const UINT8 SCOOP_SOLENOID_SIDECAR = SOLENOID_SIDECAR_1;
 	static const UINT32 SCOOP_SOLENOID_PWM = 3;
+	// Flywheel Light Sensor
+	static const UINT8 FLWYHEEL_LIGHT_SENSOR_SIDECAR = DIGITAL_SIDECAR_1;
 	static const UINT32 FLYWHEEL_LIGHT_SENSOR_PWM = 5;
+	// Flywheel Motor
+	static const UINT8 FLYWHEEL_MOTOR_SIDECAR = DIGITAL_SIDECAR_1;
 	static const UINT32 FLYWHEEL_MOTOR_PWM = 6;	
+	// Launcher In
+	static const UINT8 LAUNCHER_IN_SIDECAR = SOLENOID_SIDECAR_1;
+	static const UINT32 LAUNCHER_IN_PWM = 3;
+	// Launcher Out
+	static const UINT8 LAUNCHER_OUT_SIDECAR = SOLENOID_SIDECAR_1;
+	static const UINT32 LAUNCHER_OUT_PWM = 2;
 	
 	//Buttons
 	static const UINT32 FIRE_BUTTON = 1;
@@ -68,7 +77,7 @@ class RobotDemo : public SimpleRobot
 	float ConvertAxis(float input);
 	
 public:
-	RobotDemo(void);
+	UltimateAscent(void);
 
 	void Autonomous();
 
