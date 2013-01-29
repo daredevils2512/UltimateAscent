@@ -38,6 +38,15 @@ class UltimateAscent : public SimpleRobot
 	// Flywheel Motor
 	static const UINT8 FLYWHEEL_MOTOR_SIDECAR = DIGITAL_SIDECAR_1;
 	static const UINT32 FLYWHEEL_MOTOR_PWM = 6;	
+	// Brush Motor
+	static const UINT8 BRUSH_MOTOR_SIDECAR = DIGITAL_SIDECAR_1;
+	static const UINT32 BRUSH_MOTOR_PWM = 7;
+	// Elevator Motor
+	static const UINT8 ELEVATOR_MOTOR_SIDECAR = DIGITAL_SIDECAR_1;
+	static const UINT32 ELEVATOR_MOTOR_PWM = 8;
+	// Frisbee Light Sensor
+	static const UINT8 FRISBEE_LIGHT_SENSOR_SIDECAR = DIGITAL_SIDECAR_1;
+	static const UINT32 FRISBEE_LIGHT_SENSOR_PWM = 9;
 	// Launcher In
 	static const UINT8 LAUNCHER_IN_SIDECAR = SOLENOID_SIDECAR_1;
 	static const UINT32 LAUNCHER_IN_PWM = 3;
@@ -53,6 +62,7 @@ class UltimateAscent : public SimpleRobot
 	static const int SCOOP_BUTTON = 7;
 	
 	//VARIABLES
+	int frisbeeCount;
 	
 	Timer timer;
 	Talon frontLeftMotor;
@@ -60,12 +70,15 @@ class UltimateAscent : public SimpleRobot
 	Talon rearLeftMotor;
 	Talon rearRightMotor;
 	Talon flywheelMotor;
+	Talon brushMotor;
+	Talon elevatorMotor;
 	Solenoid solenoid1;
 	Solenoid solenoid2;
 	Solenoid scoopSolenoid;
 	Solenoid launcherIn;
 	Solenoid launcherOut;
 	DigitalInput flywheelLightSensor;
+	DigitalInput frisbeeLightSensor;
 	FlywheelEncoder flywheelEncoder;
 	Timer stopwatch;
 	FlywheelMotor pidOutput;

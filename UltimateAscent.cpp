@@ -3,18 +3,22 @@
 
 UltimateAscent::UltimateAscent(void):
 		// these must be initialized in the same order as they are declared in the header file.
+		frisbeeCount(0),
 		timer(),
 		frontLeftMotor(FRONT_LEFT_MOTOR_SIDECAR, FRONT_LEFT_MOTOR_PWM),
 		frontRightMotor(FRONT_RIGHT_MOTOR_SIDECAR, FRONT_RIGHT_MOTOR_PWM),
 		rearLeftMotor(REAR_LEFT_MOTOR_SIDECAR, REAR_LEFT_MOTOR_PWM),
 		rearRightMotor(REAR_RIGHT_MOTOR_SIDECAR, REAR_RIGHT_MOTOR_PWM),
 		flywheelMotor(FLYWHEEL_MOTOR_SIDECAR, FLYWHEEL_MOTOR_PWM),
+		brushMotor(BRUSH_MOTOR_SIDECAR, BRUSH_MOTOR_PWM),
+		elevatorMotor(ELEVATOR_MOTOR_SIDECAR, ELEVATOR_MOTOR_PWM),
 		solenoid1(SOLENOID1_SIDECAR, SOLENOID1_PWM),
 		solenoid2(SOLENOID2_SIDECAR, SOLENOID2_PWM),
 		scoopSolenoid(SCOOP_SOLENOID_SIDECAR, SCOOP_SOLENOID_PWM),
 		launcherIn(LAUNCHER_IN_SIDECAR, LAUNCHER_IN_PWM),
 		launcherOut(LAUNCHER_OUT_SIDECAR, LAUNCHER_OUT_PWM),
 		flywheelLightSensor(FLWYHEEL_LIGHT_SENSOR_SIDECAR, FLYWHEEL_LIGHT_SENSOR_PWM),
+		frisbeeLightSensor(FRISBEE_LIGHT_SENSOR_SIDECAR, FRISBEE_LIGHT_SENSOR_PWM),
 		flywheelEncoder(flywheelLightSensor),
 		stopwatch(),
 		pidOutput(flywheelMotor),
@@ -123,8 +127,14 @@ void UltimateAscent::Drive(){
 void UltimateAscent::Scoop(){
 	static bool scoopState = false;
 	static bool previousScoopButton = false;
-	
+	static bool previousFrisbeeLightValue = false;
 	bool currentScoopButton = stick1.GetRawButton(SCOOP_BUTTON);
+	bool currentFrisbeeLightValue = frisbeeLightSensor.Get();
+	
+	if (currentFrisbeeLightValue == true && previousFrisbeeLightValue == false){
+		frisbeeCount ++;
+	}
+	
 	if (currentScoopButton == true && previousScoopButton == false){
 		if (scoopState == true){
 			scoopState = false;
@@ -133,7 +143,20 @@ void UltimateAscent::Scoop(){
 			scoopState = true;
 		}
 	}
+	if (scoopState){
+		elevatorMotor.Set(1);
+		if (frisbeeCount < 4){
+			brushMotor.Set(1);
+		}
+		else{
+			brushMotor.Set(0);
+		}
+	}
+	else{
+		elevatorMotor.Set(0);
+	}
 	scoopSolenoid.Set(scoopState);
+	previousFrisbeeLightValue = currentFrisbeeLightValue;
 	previousScoopButton = currentScoopButton;
 }
 
@@ -150,6 +173,7 @@ void UltimateAscent::Shoot() {
 		stopwatch.Start();
 		waitForLeaving = false;
 		triggerButton = true;
+		frisbeeCount --;
 	}
 	if (stopwatch.Get() >= 0.25 || waitForLeaving == true) {
 		if (stopwatch.Get() >= 0.5 || waitForLeaving == true) {
