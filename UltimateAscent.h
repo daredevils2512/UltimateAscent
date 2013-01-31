@@ -47,12 +47,21 @@ class UltimateAscent : public SimpleRobot
 	// Frisbee Light Sensor
 	static const UINT8 FRISBEE_LIGHT_SENSOR_SIDECAR = DIGITAL_SIDECAR_1;
 	static const UINT32 FRISBEE_LIGHT_SENSOR_PWM = 9;
+	// Left Motor Encoder
+	static const UINT32 LEFT_MOTOR_ENCODER_PWM_A = 10;
+	static const UINT32 LEFT_MOTOR_ENCODER_PWM_B = 11;
+	// Right Motor Encoder
+	static const UINT32 RIGHT_MOTOR_ENCODER_PWM_A = 12;
+	static const UINT32 RIGHT_MOTOR_ENCODER_PWM_B = 13;
 	// Launcher In
 	static const UINT8 LAUNCHER_IN_SIDECAR = SOLENOID_SIDECAR_1;
 	static const UINT32 LAUNCHER_IN_PWM = 3;
 	// Launcher Out
 	static const UINT8 LAUNCHER_OUT_SIDECAR = SOLENOID_SIDECAR_1;
 	static const UINT32 LAUNCHER_OUT_PWM = 2;
+	// Potentiometer
+	static const UINT8 POTENTIOMETER_SIDECAR = ANALOG_SIDECAR_1;
+	static const UINT32 POTENTIOMETER_PWM = 1;
 	
 	//Buttons
 	static const UINT32 FIRE_BUTTON = 1;
@@ -80,12 +89,15 @@ class UltimateAscent : public SimpleRobot
 	DigitalInput flywheelLightSensor;
 	DigitalInput frisbeeLightSensor;
 	FlywheelEncoder flywheelEncoder;
+	Encoder leftMotorEncoder;
+	Encoder rightMotorEncoder;
 	Timer stopwatch;
 	FlywheelMotor pidOutput;
 	PIDController flywheelSpeed;
 	RobotDrive myRobot; // robot drive system
 	Joystick stick1; // only joystick
 	Joystick stick2;
+	AnalogChannel potentiometer;
 	
 	float ConvertAxis(float input);
 	

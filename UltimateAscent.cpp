@@ -20,16 +20,20 @@ UltimateAscent::UltimateAscent(void):
 		flywheelLightSensor(FLWYHEEL_LIGHT_SENSOR_SIDECAR, FLYWHEEL_LIGHT_SENSOR_PWM),
 		frisbeeLightSensor(FRISBEE_LIGHT_SENSOR_SIDECAR, FRISBEE_LIGHT_SENSOR_PWM),
 		flywheelEncoder(flywheelLightSensor),
+		leftMotorEncoder(LEFT_MOTOR_ENCODER_PWM_A, LEFT_MOTOR_ENCODER_PWM_B),
+		rightMotorEncoder(RIGHT_MOTOR_ENCODER_PWM_A, RIGHT_MOTOR_ENCODER_PWM_B),
 		stopwatch(),
 		pidOutput(flywheelMotor),
 		flywheelSpeed(0, 0, 0, &flywheelEncoder, &pidOutput),//TODO:Unfinished
 		myRobot(&frontLeftMotor, &frontRightMotor, &rearLeftMotor, &rearRightMotor),
 		stick1(1),
-		stick2(2)
+		stick2(2),
+		potentiometer(POTENTIOMETER_SIDECAR, POTENTIOMETER_PWM)
 	{
 		myRobot.SetExpiration(0.1);
 		stick1.SetAxisChannel(Joystick::kTwistAxis, 3);
 		stick1.SetAxisChannel(Joystick::kThrottleAxis, 4);
+		SmartDashboard::init();
 	}
 
 	/**
@@ -86,6 +90,8 @@ void	UltimateAscent::OperatorControl(void)
 		{
 			Drive();
 			Scoop();
+			SmartDashboard::PutNumber("Count" ,frisbeeCount);
+			SmartDashboard::PutNumber("Potentiometer",potentiometer.GetVoltage());
 		}
 	}
 
