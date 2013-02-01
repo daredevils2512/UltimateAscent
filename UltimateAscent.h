@@ -1,4 +1,5 @@
 #include "WPILib.h"
+#include <al.hpp>
 #include "FlywheelEncoder.h"
 #include "FlywheelMotor.h"
 
@@ -73,6 +74,8 @@ class UltimateAscent : public SimpleRobot
 	//VARIABLES
 	int frisbeeCount;
 	
+	al::logger log;
+	
 	Timer timer;
 	Talon frontLeftMotor;
 	Talon frontRightMotor;
@@ -99,6 +102,8 @@ class UltimateAscent : public SimpleRobot
 	Joystick stick2;
 	AnalogChannel potentiometer;
 	
+	
+	al::logger CreateLogger();
 	float ConvertAxis(float input);
 	
 public:

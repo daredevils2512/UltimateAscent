@@ -1,9 +1,14 @@
+#include <memory>
 #include <cmath>
 #include "UltimateAscent.h"
+
+using al::smart_ptr;
+using al::handler;
 
 UltimateAscent::UltimateAscent(void):
 		// these must be initialized in the same order as they are declared in the header file.
 		frisbeeCount(0),
+		log(CreateLogger()),
 		timer(),
 		frontLeftMotor(FRONT_LEFT_MOTOR_SIDECAR, FRONT_LEFT_MOTOR_PWM),
 		frontRightMotor(FRONT_RIGHT_MOTOR_SIDECAR, FRONT_RIGHT_MOTOR_PWM),
@@ -35,6 +40,14 @@ UltimateAscent::UltimateAscent(void):
 		stick1.SetAxisChannel(Joystick::kThrottleAxis, 4);
 		SmartDashboard::init();
 	}
+
+al::logger UltimateAscent::CreateLogger(){
+	al::std_creator factory;
+	factory.add_handler(smart_ptr<handler>(new al::cerr_handler()));
+	smart_ptr<handler> h = smart_ptr<handler>(new al::file_handler("log"));
+	factory.add_handler(h);
+	return factory.spawn("UltimateAscent");
+}
 
 	/**
 	 * Drive left & right motors for 2 seconds then stop
