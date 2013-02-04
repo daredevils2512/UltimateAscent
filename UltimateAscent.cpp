@@ -235,6 +235,23 @@ void UltimateAscent::Shoot() {
 	
 }
 
+void UltimateAscent::SetLauncherOut()
+{
+	launcherOut.Set(true);
+	launcherIn.Set(false);
+}
+
+void UltimateAscent::SetLauncherIn()
+{
+	launcherIn.Set(true);
+	launcherOut.Set(false);
+}
+
+void UltimateAscent::SetLauncherFalse()
+{
+	launcherIn.Set(false);
+	launcherOut.Set(false);
+}
 
 START_ROBOT_CLASS(UltimateAscent);
 
