@@ -17,6 +17,8 @@ UltimateAscent::UltimateAscent(void):
 		flywheelMotor(FLYWHEEL_MOTOR_SIDECAR, FLYWHEEL_MOTOR_PWM),
 		brushMotor(BRUSH_MOTOR_SIDECAR, BRUSH_MOTOR_PWM),
 		elevatorMotor(ELEVATOR_MOTOR_SIDECAR, ELEVATOR_MOTOR_PWM),
+		shooterAngleMotor(SHOOTER_ANGLE_MOTOR_SIDECAR, SHOOTER_ANGLE_MOTOR_PWM),
+		compressor(COMPRESSOR_SWITCH_SIDECAR, COMPRESSOR_SWITCH_PWM, COMPRESSOR_RELAY_SIDECAR, COMPRESSOR_RELAY_PWM),
 		solenoid1(SOLENOID1_SIDECAR, SOLENOID1_PWM),
 		solenoid2(SOLENOID2_SIDECAR, SOLENOID2_PWM),
 		scoopSolenoid(SCOOP_SOLENOID_SIDECAR, SCOOP_SOLENOID_PWM),
@@ -38,6 +40,8 @@ UltimateAscent::UltimateAscent(void):
 		myRobot.SetExpiration(0.1);
 		stick1.SetAxisChannel(Joystick::kTwistAxis, 3);
 		stick1.SetAxisChannel(Joystick::kThrottleAxis, 4);
+		flywheelSpeed.Enable();
+		compressor.Enabled();
 		SmartDashboard::init();
 	}
 
@@ -106,6 +110,13 @@ void UltimateAscent::OperatorControl(void)
 		{
 			Drive();
 			Scoop();
+			Shoot();
+			if ( !compressor.GetPressureSwitchValue()){
+				compressor.Start();
+			}
+			else{
+				compressor.Stop();
+			}
 			SmartDashboard::PutNumber("Count" ,frisbeeCount);
 			SmartDashboard::PutNumber("Potentiometer",potentiometer.GetVoltage());
 		}
