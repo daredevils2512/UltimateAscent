@@ -55,6 +55,7 @@ al::logger UltimateAscent::CreateLogger(){
 void UltimateAscent::Autonomous(void)
 	{
 		GetWatchdog().SetEnabled(false);
+		log << "Begining Autonomous" << al::endl;
 		
 		if (IsAutonomous ()) {
 			flywheelMotor.Set(1);
@@ -91,12 +92,14 @@ void UltimateAscent::Autonomous(void)
 			
 			flywheelMotor.Set(0);
 		}
+		
+		log << "Ending Autonomous\n";
 	}
 
 	/**
 	 * Runs the motors with arcade steering. 
 	 */
-void	UltimateAscent::OperatorControl(void)
+void UltimateAscent::OperatorControl(void)
 	{
 		myRobot.SetSafetyEnabled(true);
 		while (IsOperatorControl())
@@ -112,8 +115,8 @@ void	UltimateAscent::OperatorControl(void)
  * Runs during test mode
  */
 void UltimateAscent::Test() {
-
 }
+
 float UltimateAscent::ConvertAxis(float input){
 	if (input >= 0.05) {
 		return pow((input*0.75f), 2);
@@ -127,6 +130,9 @@ float UltimateAscent::ConvertAxis(float input){
 }
 
 void UltimateAscent::Drive(){
+	
+	log << "Begining Drive\n";
+	
 	float xOutput = ConvertAxis(stick1.GetX());
 	float yOutput = ConvertAxis(stick1.GetY());
 	float twistOutput = ConvertAxis(stick1.GetTwist());
@@ -144,6 +150,9 @@ void UltimateAscent::Drive(){
 }
 
 void UltimateAscent::Scoop(){
+	
+	log << "Begining Scoop\n";
+	
 	static bool scoopState = false;
 	static bool previousScoopButton = false;
 	static bool previousFrisbeeLightValue = false;
@@ -182,6 +191,10 @@ void UltimateAscent::Scoop(){
 const double startSpeed = 200;
 
 void UltimateAscent::Shoot() {
+	
+	log << "Begining Shoot\n";
+	
+	// waitForLeaving is used as a buffer between shots
 	static bool waitForLeaving = true;
 	bool triggerButton = false;
 	static bool priorTriggerButton = false;
@@ -193,18 +206,23 @@ void UltimateAscent::Shoot() {
 		waitForLeaving = false;
 		triggerButton = true;
 		frisbeeCount --;
+		
+		log << "Frisbees - 1\n";
 	}
 	if (stopwatch.Get() >= 0.25 || waitForLeaving == true) {
 		if (stopwatch.Get() >= 0.5 || waitForLeaving == true) {
+			log << "set launchers to false\n";
 			launcherIn.Set(false);
 			launcherOut.Set(false);
 		}
 		else {
+			log << "launcherOut set to true\n";
 			launcherIn.Set(false);
 			launcherOut.Set(true);
 		}
 	}
 	else {
+		log << "launcherIn set to true\n";
 		launcherIn.Set(true);
 		launcherOut.Set(false);
 	}
@@ -226,13 +244,13 @@ void UltimateAscent::Shoot() {
 	static double desiredSpeed = 0;
 	
 	if (stick2.GetRawButton(FLYWHEEL_ON_BUTTON)) { // Buttons have been initialized.
+		log << "flyWheel desiredSpeed set to startSpeed\n";
 		desiredSpeed = startSpeed;
 	}
 	else if (stick2.GetRawButton(FLYWHEEL_OFF_BUTTON)) { // Buttons have been initialized.
+		log << "flyWheel desiredSpeed set to 0\n";
 		desiredSpeed = 0;
 	}
-	
-	
 }
 
 
