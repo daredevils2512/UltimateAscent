@@ -105,6 +105,7 @@ void UltimateAscent::Autonomous(void)
 	 */
 void UltimateAscent::OperatorControl(void)
 	{
+		log << "Begining Operator Control" << endl;
 		myRobot.SetSafetyEnabled(true);
 		while (IsOperatorControl())
 		{
@@ -161,9 +162,7 @@ void UltimateAscent::Drive(){
 }
 
 void UltimateAscent::Scoop(){
-	
 	log << "Begining Scoop\n";
-	
 	static bool scoopState = false;
 	static bool previousScoopButton = false;
 	static bool previousFrisbeeLightValue = false;
@@ -202,9 +201,7 @@ void UltimateAscent::Scoop(){
 const double startSpeed = 200;
 
 void UltimateAscent::Shoot() {
-	
 	log << "Begining Shoot\n";
-	
 	// waitForLeaving is used as a buffer between shots
 	static bool waitForLeaving = true;
 	bool triggerButton = false;
