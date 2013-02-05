@@ -54,6 +54,9 @@ class UltimateAscent : public SimpleRobot
 	// Right Motor Encoder
 	static const UINT32 RIGHT_MOTOR_ENCODER_PWM_A = 12;
 	static const UINT32 RIGHT_MOTOR_ENCODER_PWM_B = 13;
+	//Shooter Angle Motor
+	static const UINT8 SHOOTER_ANGLE_MOTOR_SIDECAR = DIGITAL_SIDECAR_1;
+	static const UINT32 SHOOTER_ANGLE_MOTOR_PWM = 14;
 	// Launcher In
 	static const UINT8 LAUNCHER_IN_SIDECAR = SOLENOID_SIDECAR_1;
 	static const UINT32 LAUNCHER_IN_PWM = 3;
@@ -63,6 +66,11 @@ class UltimateAscent : public SimpleRobot
 	// Potentiometer
 	static const UINT8 POTENTIOMETER_SIDECAR = ANALOG_SIDECAR_1;
 	static const UINT32 POTENTIOMETER_PWM = 1;
+	// Compressor
+	static const UINT8 COMPRESSOR_RELAY_SIDECAR = DIGITAL_SIDECAR_1;
+	static const UINT32 COMPRESSOR_RELAY_PWM = 15;
+	static const UINT8 COMPRESSOR_SWITCH_SIDECAR = DIGITAL_SIDECAR_2;
+	static const UINT32 COMPRESSOR_SWITCH_PWM = 16;
 	
 	//Buttons
 	static const UINT32 FIRE_BUTTON = 1;
@@ -84,6 +92,8 @@ class UltimateAscent : public SimpleRobot
 	Talon flywheelMotor;
 	Talon brushMotor;
 	Talon elevatorMotor;
+	Talon shooterAngleMotor;
+	Compressor compressor;
 	Solenoid solenoid1;
 	Solenoid solenoid2;
 	Solenoid scoopSolenoid;

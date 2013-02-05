@@ -3,10 +3,10 @@
 
 
 FlywheelMotor::FlywheelMotor(Talon &motor):
-	flywheelMotor(&motor)
+	flywheelMotor(motor)
 {
 	
 }
 void FlywheelMotor::PIDWrite(float output){
-	flywheelMotor->Set(output);
+	flywheelMotor.Set(output);
 }

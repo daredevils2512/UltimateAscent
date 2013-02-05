@@ -3,7 +3,7 @@
 class FlywheelMotor:public PIDOutput {
 	
 private:
-Talon *flywheelMotor;
+Talon &flywheelMotor;
 	
 public:
 	FlywheelMotor(Talon &motor);
