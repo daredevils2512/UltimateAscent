@@ -60,34 +60,28 @@ void UltimateAscent::Autonomous(void)
 			flywheelMotor.Set(1);
 			Wait (2);
 			// Shoots first ball
-			launcherOut.Set(true);
-			launcherIn.Set(false);
+			SetLauncherOut();
 			// Leaves piston out for .25 seconds
 			Wait(0.25);
-			launcherIn.Set(true);
-			launcherOut.Set(false);
+			SetLauncherIn();
 			
 			// Waits 1.5 seconds until shooting again
 			Wait(1.5);
 			
 			// Shoots second ball
-			launcherOut.Set(true);
-			launcherIn.Set(false);
+			SetLauncherOut();
 			// Leaves piston out for .25 seconds
 			Wait(0.25);
-			launcherIn.Set(true);
-			launcherOut.Set(false);
+			SetLauncherIn();
 			
 			// Waits 1.5 seconds until shooting again
 			Wait(1.5);
 			
 			// Shoots third ball
-			launcherOut.Set(true);
-			launcherIn.Set(false);
+			SetLauncherOut();
 			// Leaves piston out for .25 seconds
 			Wait(0.25);
-			launcherIn.Set(true);
-			launcherOut.Set(false);
+			SetLauncherIn();
 			
 			flywheelMotor.Set(0);
 		}
@@ -196,17 +190,14 @@ void UltimateAscent::Shoot() {
 	}
 	if (stopwatch.Get() >= 0.25 || waitForLeaving == true) {
 		if (stopwatch.Get() >= 0.5 || waitForLeaving == true) {
-			launcherIn.Set(false);
-			launcherOut.Set(false);
+			SetLauncherFalse();
 		}
 		else {
-			launcherIn.Set(false);
-			launcherOut.Set(true);
+			SetLauncherOut();
 		}
 	}
 	else {
-		launcherIn.Set(true);
-		launcherOut.Set(false);
+		SetLauncherIn();
 	}
 	
 	if (stopwatch.Get() >= 5) {
