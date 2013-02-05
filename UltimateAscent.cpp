@@ -65,27 +65,33 @@ void UltimateAscent::Autonomous(void)
 			flywheelMotor.Set(1);
 			Wait (2);
 			// Shoots first ball
+			log << "Set Launchers Out";
 			SetLauncherOut();
 			// Leaves piston out for .25 seconds
 			Wait(0.25);
+			log << "Set Launchers In";
 			SetLauncherIn();
 			
 			// Waits 1.5 seconds until shooting again
 			Wait(1.5);
 			
 			// Shoots second ball
+			log << "Set Launchers Out";
 			SetLauncherOut();
 			// Leaves piston out for .25 seconds
 			Wait(0.25);
+			log << "Set Launchers In";
 			SetLauncherIn();
 			
 			// Waits 1.5 seconds until shooting again
 			Wait(1.5);
 			
 			// Shoots third ball
+			log << "Set Launchers Out";
 			SetLauncherOut();
 			// Leaves piston out for .25 seconds
 			Wait(0.25);
+			log << "Set Launchers In";
 			SetLauncherIn();
 			
 			flywheelMotor.Set(0);
@@ -99,7 +105,7 @@ void UltimateAscent::Autonomous(void)
 	 */
 void UltimateAscent::OperatorControl(void)
 	{
-		log << "Begining Operator Control" << endl;
+		log << "Begining Operator Control\n";
 		myRobot.SetSafetyEnabled(true);
 		while (IsOperatorControl())
 		{
@@ -144,6 +150,7 @@ void UltimateAscent::Drive(){
 	float twistOutput = ConvertAxis(stick1.GetTwist());
 	
 	if (stick1.GetRawButton(GRIPPIES_DOWN_BUTTON)){
+		log << "Grippies down button pressed\n";
 		xOutput = 0;
 		solenoid1.Set(true);
 		solenoid2.Set(true);
