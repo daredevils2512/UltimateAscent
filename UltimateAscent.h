@@ -116,6 +116,18 @@ class UltimateAscent : public SimpleRobot
 	al::logger CreateLogger();
 	float ConvertAxis(float input);
 	
+	void Shoot();	
+	
+	void Drive();
+	
+	void Scoop();
+	
+	void SetLauncherOut();
+	
+	void SetLauncherIn();
+	
+	void SetLauncherFalse();
+	
 public:
 	UltimateAscent(void);
 
@@ -125,9 +137,4 @@ public:
 	
 	void Test();
 	
-	void Shoot();	
-	
-	void Drive();
-	
-	void Scoop();
 };
