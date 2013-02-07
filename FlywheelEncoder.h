@@ -12,7 +12,6 @@ private:
 	DigitalInput &flywheelLightSensor;
 	Timer flywheelStopwatch;
 	
-	int rate;
 	static const double period;
 	int flywheelCounter;
 	int rotationsPerPeriod;

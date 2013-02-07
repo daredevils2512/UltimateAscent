@@ -6,7 +6,6 @@ const double FlywheelEncoder::period = 0.5;
 FlywheelEncoder::FlywheelEncoder(DigitalInput &lightSensor):
 	flywheelLightSensor(lightSensor)
 {
-	rate = 0;
 	flywheelCounter = 0;
 	flywheelStopwatch.Reset();
 	flywheelStopwatch.Start();
@@ -30,8 +29,7 @@ double FlywheelEncoder::GetRate(){
 	}
 	previousLightValue = currentLightValue;
 	// Change periods(0.5s) to rpm(1 min)
-	rate = PeriodCounter () * 120;
-	return rate;
+	return PeriodCounter () * 120;
 }
 
 double FlywheelEncoder::PIDGet(){
