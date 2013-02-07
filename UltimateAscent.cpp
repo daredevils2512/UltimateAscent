@@ -53,9 +53,6 @@ al::logger UltimateAscent::CreateLogger(){
 	return factory.spawn("UltimateAscent");
 }
 
-	/**
-	 * Drive left & right motors for 2 seconds then stop
-	 */
 void UltimateAscent::Autonomous(void)
 	{
 		GetWatchdog().SetEnabled(false);
@@ -94,9 +91,7 @@ void UltimateAscent::Autonomous(void)
 		log << "Ending Autonomous\n";
 	}
 
-	/**
-	 * Runs the motors with arcade steering. 
-	 */
+
 void UltimateAscent::OperatorControl(void)
 	{
 		myRobot.SetSafetyEnabled(true);
@@ -139,12 +134,11 @@ void UltimateAscent::OperatorControl(void)
 		}
 	}
 
-/**
- * Runs during test mode
- */
 void UltimateAscent::Test() {
 }
 
+
+// Desensitize Joystick
 float UltimateAscent::ConvertAxis(float input){
 	if (input >= 0.05) {
 		return pow((input*0.75f), 2);
@@ -157,14 +151,17 @@ float UltimateAscent::ConvertAxis(float input){
 	}
 }
 
+
 void UltimateAscent::Drive(){
 	
 	log << "Begining Drive\n";
-	
+	// Joystick Axis Inputs
 	float xOutput = ConvertAxis(stick1.GetX());
 	float yOutput = ConvertAxis(stick1.GetY());
 	float twistOutput = ConvertAxis(stick1.GetTwist());
 	
+	
+	//Grippy Deployment
 	if (stick1.GetRawButton(GRIPPIES_DOWN_BUTTON)){
 		xOutput = 0;
 		solenoid1.Set(true);
@@ -174,7 +171,8 @@ void UltimateAscent::Drive(){
 		solenoid1.Set(false);
 		solenoid2.Set(false);				
 	}
-	myRobot.MecanumDrive_Cartesian(xOutput, yOutput, twistOutput); // drive with arcade style (use right stick)
+	//Drive with Mecanum Style
+	myRobot.MecanumDrive_Cartesian(xOutput, yOutput, twistOutput);
 }
 
 void UltimateAscent::Scoop(){
@@ -182,15 +180,18 @@ void UltimateAscent::Scoop(){
 	log << "Begining Scoop\n";
 	
 	static bool scoopState = false;
+	//Rising edge detector variables for Toggle Button and Frisbee Light Sensor
 	static bool previousScoopButton = false;
 	static bool previousFrisbeeLightValue = false;
 	bool currentScoopButton = stick1.GetRawButton(SCOOP_BUTTON);
 	bool currentFrisbeeLightValue = frisbeeLightSensor.Get();
 	
+	//Count Frisbees if Light Sensor is tripped on Rising Edge
 	if (currentFrisbeeLightValue == true && previousFrisbeeLightValue == false){
 		frisbeeCount ++;
 	}
 	
+	//Toggle the state of the Scoop. Deployed or Undeployed
 	if (currentScoopButton == true && previousScoopButton == false){
 		if (scoopState == true){
 			scoopState = false;
@@ -199,8 +200,11 @@ void UltimateAscent::Scoop(){
 			scoopState = true;
 		}
 	}
+	
+	//Runs the elevator if Scoop is deployed.
 	if (scoopState){
 		elevatorMotor.Set(1);
+		//Run the Brush if Frisbee limit hasn't been reached
 		if (frisbeeCount < 4){
 			brushMotor.Set(1);
 		}
@@ -211,7 +215,9 @@ void UltimateAscent::Scoop(){
 	else{
 		elevatorMotor.Set(0);
 	}
+	//Sets the scoop solenoids to the current state
 	scoopSolenoid.Set(scoopState);
+	//Rising Edge detector. Sets previous values to thier current values.
 	previousFrisbeeLightValue = currentFrisbeeLightValue;
 	previousScoopButton = currentScoopButton;
 }
