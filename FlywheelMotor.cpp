@@ -1,5 +1,5 @@
-#include"WPILib.h"
-#include"FlywheelMotor.h"
+#include <WPILib.h>
+#include "FlywheelMotor.h"
 
 
 FlywheelMotor::FlywheelMotor(Talon &motor):
