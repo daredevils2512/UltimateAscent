@@ -1,4 +1,4 @@
-#include "WPILib.h"
+#include <WPILib.h>
 #include "FlywheelEncoder.h"
 
 const double FlywheelEncoder::period = 0.5;
