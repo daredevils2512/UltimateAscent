@@ -31,7 +31,7 @@ UltimateAscent::UltimateAscent(void):
 		rightMotorEncoder(RIGHT_MOTOR_ENCODER_PWM_A, RIGHT_MOTOR_ENCODER_PWM_B),
 		stopwatch(),
 		pidOutput(flywheelMotor),
-		flywheelSpeed(0, 0, 0, &flywheelEncoder, &pidOutput),//TODO:Unfinished
+		flywheelSpeed(0, 0, 0, &flywheelEncoder, &pidOutput), // TODO:Tune PID
 		myRobot(&frontLeftMotor, &frontRightMotor, &rearLeftMotor, &rearRightMotor),
 		stick1(1),
 		stick2(2),
@@ -105,12 +105,14 @@ void UltimateAscent::OperatorControl(void)
 			Drive();
 			Scoop();
 			Shoot();
-			if ( !compressor.GetPressureSwitchValue()){
+			// Run the compressor until it reaches a certain pressure
+			if ( !compressor.GetPressureSwitchValue()){ 
 				compressor.Start();
 			}
 			else{
 				compressor.Stop();
 			}
+			// Keep track of frisbees in robot
 			bool frisbee1 = false;
 			bool frisbee2 = false;
 			bool frisbee3 = false;
@@ -222,11 +224,13 @@ void UltimateAscent::Shoot() {
 	
 	// waitForLeaving is used as a buffer between shots
 	static bool waitForLeaving = true;
+	// Both are used for rising edge detector
 	bool triggerButton = false;
 	static bool priorTriggerButton = false;
 	
 	//Actuators
 	if (stick2.GetRawButton(FIRE_BUTTON) && !priorTriggerButton) {
+		// Fire frisbee if the button is pressed
 		stopwatch.Reset();
 		stopwatch.Start();
 		waitForLeaving = false;
@@ -235,6 +239,8 @@ void UltimateAscent::Shoot() {
 		
 		log << "Frisbees - 1\n";
 	}
+	
+	// Leaves shooter out for 0.25 seconds
 	if (stopwatch.Get() >= 0.25 || waitForLeaving == true) {
 		if (stopwatch.Get() >= 0.5 || waitForLeaving == true) {
 			log << "set launchers to false\n";
@@ -263,14 +269,15 @@ void UltimateAscent::Shoot() {
 	}
 	
 	
-//	double currentSpeed = 0;
+	// double currentSpeed = 0;
 	static double desiredSpeed = 0;
 	
-	if (stick2.GetRawButton(FLYWHEEL_ON_BUTTON)) { // Buttons have been initialized.
+	// Turn flywheels on and off
+	if (stick2.GetRawButton(FLYWHEEL_ON_BUTTON)) {
 		log << "flyWheel desiredSpeed set to startSpeed\n";
 		desiredSpeed = startSpeed;
 	}
-	else if (stick2.GetRawButton(FLYWHEEL_OFF_BUTTON)) { // Buttons have been initialized.
+	else if (stick2.GetRawButton(FLYWHEEL_OFF_BUTTON)) {
 		log << "flyWheel desiredSpeed set to 0\n";
 		desiredSpeed = 0;
 	}
