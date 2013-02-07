@@ -1,4 +1,5 @@
 #include "WPILib.h"
+#pragma once
 
 
 /* This class counts how many times the flywheel has turned during a period

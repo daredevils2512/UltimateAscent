@@ -2,6 +2,7 @@
 #include <al.hpp>
 #include "FlywheelEncoder.h"
 #include "FlywheelMotor.h"
+#pragma once
 
 class UltimateAscent : public SimpleRobot
 {
