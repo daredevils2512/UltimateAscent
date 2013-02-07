@@ -53,9 +53,6 @@ al::logger UltimateAscent::CreateLogger(){
 	return factory.spawn("UltimateAscent");
 }
 
-	/**
-	 * Drive left & right motors for 2 seconds then stop
-	 */
 void UltimateAscent::Autonomous(void)
 	{
 		GetWatchdog().SetEnabled(false);
@@ -63,7 +60,10 @@ void UltimateAscent::Autonomous(void)
 		
 		if (IsAutonomous ()) {
 			flywheelMotor.Set(1);
+			
+			// Waits in order to let the flywheel to get up to speed
 			Wait (2);
+			
 			// Shoots first ball
 			log << "Set Launchers Out";
 			SetLauncherOut();
@@ -72,7 +72,7 @@ void UltimateAscent::Autonomous(void)
 			log << "Set Launchers In";
 			SetLauncherIn();
 			
-			// Waits 1.5 seconds until shooting again
+			// Waits for the flywheel to get up to speed between shots
 			Wait(1.5);
 			
 			// Shoots second ball
@@ -83,7 +83,7 @@ void UltimateAscent::Autonomous(void)
 			log << "Set Launchers In";
 			SetLauncherIn();
 			
-			// Waits 1.5 seconds until shooting again
+			// Waits for the flywheel to get up to speed between shots
 			Wait(1.5);
 			
 			// Shoots third ball
@@ -94,6 +94,7 @@ void UltimateAscent::Autonomous(void)
 			log << "Set Launchers In";
 			SetLauncherIn();
 			
+			// Sets the flywheel speed to zero before teleop
 			flywheelMotor.Set(0);
 		}
 		
