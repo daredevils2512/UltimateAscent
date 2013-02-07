@@ -60,31 +60,41 @@ void UltimateAscent::Autonomous(void)
 		
 		if (IsAutonomous ()) {
 			flywheelMotor.Set(1);
+			
+			// Waits in order to let the flywheel to get up to speed
 			Wait (2);
+			
 			// Shoots first ball
+			log << "Set Launchers Out";
 			SetLauncherOut();
 			// Leaves piston out for .25 seconds
 			Wait(0.25);
+			log << "Set Launchers In";
 			SetLauncherIn();
 			
-			// Waits 1.5 seconds until shooting again
+			// Waits for the flywheel to get up to speed between shots
 			Wait(1.5);
 			
 			// Shoots second ball
+			log << "Set Launchers Out";
 			SetLauncherOut();
 			// Leaves piston out for .25 seconds
 			Wait(0.25);
+			log << "Set Launchers In";
 			SetLauncherIn();
 			
-			// Waits 1.5 seconds until shooting again
+			// Waits for the flywheel to get up to speed between shots
 			Wait(1.5);
 			
 			// Shoots third ball
+			log << "Set Launchers Out";
 			SetLauncherOut();
 			// Leaves piston out for .25 seconds
 			Wait(0.25);
+			log << "Set Launchers In";
 			SetLauncherIn();
 			
+			// Sets the flywheel speed to zero before teleop
 			flywheelMotor.Set(0);
 		}
 		
@@ -94,6 +104,7 @@ void UltimateAscent::Autonomous(void)
 
 void UltimateAscent::OperatorControl(void)
 	{
+		log << "Begining Operator Control\n";
 		myRobot.SetSafetyEnabled(true);
 		while (IsOperatorControl())
 		{
@@ -163,6 +174,7 @@ void UltimateAscent::Drive(){
 	
 	//Grippy Deployment
 	if (stick1.GetRawButton(GRIPPIES_DOWN_BUTTON)){
+		log << "Grippies down button pressed\n";
 		xOutput = 0;
 		solenoid1.Set(true);
 		solenoid2.Set(true);
@@ -176,9 +188,7 @@ void UltimateAscent::Drive(){
 }
 
 void UltimateAscent::Scoop(){
-	
 	log << "Begining Scoop\n";
-	
 	static bool scoopState = false;
 	//Rising edge detector variables for Toggle Button and Frisbee Light Sensor
 	static bool previousScoopButton = false;
@@ -225,9 +235,7 @@ void UltimateAscent::Scoop(){
 const double startSpeed = 200;
 
 void UltimateAscent::Shoot() {
-	
 	log << "Begining Shoot\n";
-	
 	// waitForLeaving is used as a buffer between shots
 	static bool waitForLeaving = true;
 	// Both are used for rising edge detector
