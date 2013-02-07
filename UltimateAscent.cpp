@@ -111,8 +111,29 @@ void UltimateAscent::OperatorControl(void)
 			else{
 				compressor.Stop();
 			}
-			SmartDashboard::PutNumber("Count" ,frisbeeCount);
+			bool frisbee1 = false;
+			bool frisbee2 = false;
+			bool frisbee3 = false;
+			bool frisbee4 = false;
+			
+			if (frisbeeCount >= 1) {
+				frisbee1 = true;
+			}
+			if (frisbeeCount >= 2) {
+				frisbee2 = true;
+			}
+			if (frisbeeCount >= 3) {
+				frisbee3 = true;
+			}
+			if (frisbeeCount == 4) {
+				frisbee4 = true;
+			}
+			SmartDashboard::PutBoolean("Frisbee1", frisbee1);
+			SmartDashboard::PutBoolean("Frisbee2", frisbee2);
+			SmartDashboard::PutBoolean("Frisbee3", frisbee3);
+			SmartDashboard::PutBoolean("Frisbee4", frisbee4);
 			SmartDashboard::PutNumber("Potentiometer",potentiometer.GetVoltage());
+			SmartDashboard::PutNumber("Fly Wheel Motor PID", flywheelSpeed.Get());
 		}
 	}
 
