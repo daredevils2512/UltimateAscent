@@ -21,7 +21,10 @@ UltimateAscent::UltimateAscent(void):
 		compressor(COMPRESSOR_SWITCH_SIDECAR, COMPRESSOR_SWITCH_PWM, COMPRESSOR_RELAY_SIDECAR, COMPRESSOR_RELAY_PWM),
 		solenoid1(SOLENOID1_SIDECAR, SOLENOID1_PWM),
 		solenoid2(SOLENOID2_SIDECAR, SOLENOID2_PWM),
-		scoopSolenoid(SCOOP_SOLENOID_SIDECAR, SCOOP_SOLENOID_PWM),
+		solenoid3(SOLENOID3_SIDECAR, SOLENOID3_PWM),
+		solenoid4(SOLENOID4_SIDECAR, SOLENOID4_PWM),
+		scoopSolenoid1(SCOOP_SOLENOID1_SIDECAR, SCOOP_SOLENOID1_PWM),
+		scoopSolenoid2(SCOOP_SOLENOID2_SIDECAR, SCOOP_SOLENOID2_PWM),
 		launcherIn(LAUNCHER_IN_SIDECAR, LAUNCHER_IN_PWM),
 		launcherOut(LAUNCHER_OUT_SIDECAR, LAUNCHER_OUT_PWM),
 		flywheelLightSensor(FLWYHEEL_LIGHT_SENSOR_SIDECAR, FLYWHEEL_LIGHT_SENSOR_PWM),
@@ -37,6 +40,7 @@ UltimateAscent::UltimateAscent(void):
 		stick2(2),
 		potentiometer(POTENTIOMETER_SIDECAR, POTENTIOMETER_PWM)
 	{
+		myRobot.SetInvertedMotor(RobotDrive::kFrontLeftMotor, true);
 		myRobot.SetExpiration(0.1);
 		stick1.SetAxisChannel(Joystick::kTwistAxis, 3);
 		stick1.SetAxisChannel(Joystick::kThrottleAxis, 4);
@@ -176,12 +180,16 @@ void UltimateAscent::Drive(){
 	if (stick1.GetRawButton(GRIPPIES_DOWN_BUTTON)){
 		log << "Grippies down button pressed\n";
 		xOutput = 0;
-		solenoid1.Set(true);
+		solenoid1.Set(false);
 		solenoid2.Set(true);
+		solenoid3.Set(false);
+		solenoid4.Set(true);
 	}
 	else{
-		solenoid1.Set(false);
-		solenoid2.Set(false);				
+		solenoid1.Set(true);
+		solenoid2.Set(false);
+		solenoid3.Set(true);
+		solenoid4.Set(false);
 	}
 	//Drive with Mecanum Style
 	myRobot.MecanumDrive_Cartesian(xOutput, yOutput, twistOutput);
@@ -210,7 +218,14 @@ void UltimateAscent::Scoop(){
 			scoopState = true;
 		}
 	}
-	
+	if(stick1.GetRawButton(7)){
+		scoopSolenoid1.Set(true);
+		scoopSolenoid2.Set(false);
+	}
+	else if(stick1.GetRawButton(8)){
+		scoopSolenoid1.Set(false);
+		scoopSolenoid2.Set(true);		
+	}
 	//Runs the elevator if Scoop is deployed.
 	if (scoopState){
 		elevatorMotor.Set(1);
@@ -226,7 +241,8 @@ void UltimateAscent::Scoop(){
 		elevatorMotor.Set(0);
 	}
 	//Sets the scoop solenoids to the current state
-	scoopSolenoid.Set(scoopState);
+//	scoopSolenoid1.Set(scoopState);
+//	scoopSolenoid2.Set(scoopState);
 	//Rising Edge detector. Sets previous values to thier current values.
 	previousFrisbeeLightValue = currentFrisbeeLightValue;
 	previousScoopButton = currentScoopButton;
@@ -236,6 +252,15 @@ const double startSpeed = 200;
 
 void UltimateAscent::Shoot() {
 	log << "Begining Shoot\n";
+	if (stick2.GetRawButton(ANGLE_UP_BUTTON)){
+		shooterAngleMotor.Set(Relay::kForward);
+	}
+	else if (stick2.GetRawButton(ANGLE_DOWN_BUTTON)){
+		shooterAngleMotor.Set(Relay::kReverse);
+	}
+	else{
+		shooterAngleMotor.Set(Relay::kOff);
+	}
 	// waitForLeaving is used as a buffer between shots
 	static bool waitForLeaving = true;
 	// Both are used for rising edge detector
@@ -262,12 +287,12 @@ void UltimateAscent::Shoot() {
 		}
 		else {
 			log << "launcherOut set to true\n";
-			SetLauncherOut();
+			SetLauncherIn();
 		}
 	}
 	else {
 		log << "launcherIn set to true\n";
-		SetLauncherIn();
+		SetLauncherOut();
 	}
 	
 	if (stopwatch.Get() >= 5) {
