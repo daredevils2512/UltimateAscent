@@ -45,6 +45,8 @@ UltimateAscent::UltimateAscent(void):
 		stick1.SetAxisChannel(Joystick::kTwistAxis, 3);
 		stick1.SetAxisChannel(Joystick::kThrottleAxis, 4);
 		flywheelSpeed.Enable();
+		flywheelSpeed.SetInputRange(0, 5000);
+		flywheelSpeed.SetOutputRange(0, 5000);
 		compressor.Enabled();
 		SmartDashboard::init();
 	}
@@ -70,33 +72,33 @@ void UltimateAscent::Autonomous(void)
 			
 			// Shoots first ball
 			log << "Set Launchers Out";
-			SetLauncherOut();
+			SetLauncherIn();
 			// Leaves piston out for .25 seconds
 			Wait(0.25);
 			log << "Set Launchers In";
-			SetLauncherIn();
+			SetLauncherOut();
 			
 			// Waits for the flywheel to get up to speed between shots
 			Wait(1.5);
 			
 			// Shoots second ball
 			log << "Set Launchers Out";
-			SetLauncherOut();
+			SetLauncherIn();
 			// Leaves piston out for .25 seconds
 			Wait(0.25);
 			log << "Set Launchers In";
-			SetLauncherIn();
+			SetLauncherOut();
 			
 			// Waits for the flywheel to get up to speed between shots
 			Wait(1.5);
 			
 			// Shoots third ball
 			log << "Set Launchers Out";
-			SetLauncherOut();
+			SetLauncherIn();
 			// Leaves piston out for .25 seconds
 			Wait(0.25);
 			log << "Set Launchers In";
-			SetLauncherIn();
+			SetLauncherOut();
 			
 			// Sets the flywheel speed to zero before teleop
 			flywheelMotor.Set(0);
@@ -197,7 +199,7 @@ void UltimateAscent::Drive(){
 
 void UltimateAscent::Scoop(){
 	log << "Begining Scoop\n";
-	static bool scoopState = false;
+//	static bool scoopState = false;
 	//Rising edge detector variables for Toggle Button and Frisbee Light Sensor
 	static bool previousScoopButton = false;
 	static bool previousFrisbeeLightValue = false;
@@ -205,7 +207,7 @@ void UltimateAscent::Scoop(){
 	bool currentFrisbeeLightValue = frisbeeLightSensor.Get();
 	
 	//Count Frisbees if Light Sensor is tripped on Rising Edge
-	if (currentFrisbeeLightValue == true && previousFrisbeeLightValue == false){
+/*	if (currentFrisbeeLightValue == true && previousFrisbeeLightValue == false){
 		frisbeeCount ++;
 	}
 	
@@ -218,16 +220,29 @@ void UltimateAscent::Scoop(){
 			scoopState = true;
 		}
 	}
-	if(stick1.GetRawButton(7)){
+*/
+	if(stick1.GetRawButton(SCOOP_UP_BUTTON)){
 		scoopSolenoid1.Set(true);
 		scoopSolenoid2.Set(false);
 	}
-	else if(stick1.GetRawButton(8)){
+	else if(stick1.GetRawButton(SCOOP_DOWN_BUTTON)){
 		scoopSolenoid1.Set(false);
 		scoopSolenoid2.Set(true);		
 	}
+	
+	if (stick1.GetRawButton(SCOOP_BUTTON)){
+		brushMotor.Set(1);
+	}
+	else if (stick1.GetRawButton(SCOOP_REVERSE_BUTTON)){
+		brushMotor.Set(-1);
+	}
+	else {
+		brushMotor.Set(0);
+	}
+	
+	
 	//Runs the elevator if Scoop is deployed.
-	if (scoopState){
+/*	if (scoopState){
 		elevatorMotor.Set(1);
 		//Run the Brush if Frisbee limit hasn't been reached
 		if (frisbeeCount < 4){
@@ -240,6 +255,7 @@ void UltimateAscent::Scoop(){
 	else{
 		elevatorMotor.Set(0);
 	}
+*/
 	//Sets the scoop solenoids to the current state
 //	scoopSolenoid1.Set(scoopState);
 //	scoopSolenoid2.Set(scoopState);
@@ -320,6 +336,9 @@ void UltimateAscent::Shoot() {
 		log << "flyWheel desiredSpeed set to 0\n";
 		desiredSpeed = 0;
 	}
+	desiredSpeed = (stick2.GetThrottle() + 1) * 50;
+	flywheelSpeed.SetSetpoint(desiredSpeed);
+	
 }
 
 void UltimateAscent::SetLauncherOut()
