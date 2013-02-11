@@ -35,7 +35,7 @@ UltimateAscent::UltimateAscent(void):
 		stopwatch(),
 		pidOutput(flywheelMotor),
 		flywheelSpeed(0, 0, 0, &flywheelEncoder, &pidOutput), // TODO:Tune PID
-		myRobot(&frontLeftMotor, &frontRightMotor, &rearLeftMotor, &rearRightMotor),
+		myRobot(&frontLeftMotor, &rearLeftMotor, &frontRightMotor, &rearRightMotor),
 		stick1(1),
 		stick2(2),
 		potentiometer(POTENTIOMETER_SIDECAR, POTENTIOMETER_PWM)
@@ -146,7 +146,7 @@ void UltimateAscent::OperatorControl(void)
 			SmartDashboard::PutBoolean("Frisbee2", frisbee2);
 			SmartDashboard::PutBoolean("Frisbee3", frisbee3);
 			SmartDashboard::PutBoolean("Frisbee4", frisbee4);
-			SmartDashboard::PutNumber("Potentiometer",potentiometer.GetVoltage());
+			SmartDashboard::PutNumber("Potentiometer",potentiometer.GetAverageVoltage());
 			SmartDashboard::PutNumber("Fly Wheel Motor PID", flywheelSpeed.Get());
 		}
 	}
@@ -232,12 +232,18 @@ void UltimateAscent::Scoop(){
 	
 	if (stick1.GetRawButton(SCOOP_BUTTON)){
 		brushMotor.Set(1);
+		elevatorMotor.Set(1);
+//		rearRightMotor.Set(1);
 	}
 	else if (stick1.GetRawButton(SCOOP_REVERSE_BUTTON)){
 		brushMotor.Set(-1);
+		elevatorMotor.Set(-1);
+//		rearRightMotor.Set(-1);
 	}
 	else {
 		brushMotor.Set(0);
+		elevatorMotor.Set(0);
+//		rearRightMotor.Set(0);
 	}
 	
 	
@@ -267,6 +273,7 @@ void UltimateAscent::Scoop(){
 const double startSpeed = 200;
 
 void UltimateAscent::Shoot() {
+	static bool flywheelState = true;
 	log << "Begining Shoot\n";
 	if (stick2.GetRawButton(ANGLE_UP_BUTTON)){
 		shooterAngleMotor.Set(Relay::kForward);
@@ -330,15 +337,22 @@ void UltimateAscent::Shoot() {
 	// Turn flywheels on and off
 	if (stick2.GetRawButton(FLYWHEEL_ON_BUTTON)) {
 		log << "flyWheel desiredSpeed set to startSpeed\n";
+		flywheelState = true;
 		desiredSpeed = startSpeed;
 	}
 	else if (stick2.GetRawButton(FLYWHEEL_OFF_BUTTON)) {
 		log << "flyWheel desiredSpeed set to 0\n";
+		flywheelState = false;
 		desiredSpeed = 0;
 	}
-	desiredSpeed = (stick2.GetThrottle() + 1) * 50;
-	flywheelSpeed.SetSetpoint(desiredSpeed);
-	
+//	desiredSpeed = (stick2.GetThrottle() + 1) * 50;
+//	flywheelSpeed.SetSetpoint(desiredSpeed);
+	if (flywheelState){
+		flywheelMotor.Set(0.8);
+	}
+	else {
+		flywheelMotor.Set(0);
+	}
 }
 
 void UltimateAscent::SetLauncherOut()

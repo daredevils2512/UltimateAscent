@@ -84,8 +84,8 @@ class UltimateAscent : public SimpleRobot
 	
 	//Joystick 1 Buttons
 	static const int GRIPPIES_DOWN_BUTTON = 2;
-	static const int SCOOP_BUTTON = 7;
-	static const int SCOOP_REVERSE_BUTTON = 8;
+	static const int SCOOP_BUTTON = 8;
+	static const int SCOOP_REVERSE_BUTTON = 7;
 	static const int SCOOP_UP_BUTTON = 10;
 	static const int SCOOP_DOWN_BUTTON = 9;
 	
