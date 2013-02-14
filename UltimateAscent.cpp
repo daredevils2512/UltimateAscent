@@ -167,10 +167,10 @@ void UltimateAscent::Test() {
 // Desensitize Joystick
 float UltimateAscent::ConvertAxis(float input){
 	if (input >= 0.05) {
-		return pow((input*0.75f), 2);
+		return pow((input), 3);
 	}
 	else if (input <= -0.05) {
-		return pow((input*0.75f), 2)*-1;
+		return (pow((input), 3));
 	}
 	else {
 		return 0;
@@ -184,7 +184,7 @@ void UltimateAscent::Drive(){
 	// Joystick Axis Inputs
 	float xOutput = ConvertAxis(stick1.GetX());
 	float yOutput = ConvertAxis(stick1.GetY());
-	float twistOutput = ConvertAxis(stick1.GetTwist());
+	float twistOutput = ConvertAxis(stick1.GetTwist()) / 2;
 	
 	
 	//Grippy Deployment
@@ -208,75 +208,61 @@ void UltimateAscent::Drive(){
 
 void UltimateAscent::Scoop(){
 	log << "Begining Scoop\n";
-//	static bool scoopState = false;
+	static bool scoopState = false;
 	//Rising edge detector variables for Toggle Button and Frisbee Light Sensor
-	static bool previousScoopButton = false;
 	static bool previousFrisbeeLightValue = false;
-	bool currentScoopButton = stick1.GetRawButton(SCOOP_BUTTON);
 	bool currentFrisbeeLightValue = frisbeeLightSensor.Get();
 	
 	//Count Frisbees if Light Sensor is tripped on Rising Edge
-/*	if (currentFrisbeeLightValue == true && previousFrisbeeLightValue == false){
-		frisbeeCount ++;
-	}
+//	if (currentFrisbeeLightValue == true && previousFrisbeeLightValue == false){
+//		frisbeeCount ++;
+//	}
 	
 	//Toggle the state of the Scoop. Deployed or Undeployed
-	if (currentScoopButton == true && previousScoopButton == false){
-		if (scoopState == true){
-			scoopState = false;
-		}
-		else{
-			scoopState = true;
-		}
+	if (stick1.GetRawButton(6)){
+		scoopState = false;
 	}
-*/
+	else if(stick1.GetRawButton(4)){
+		scoopState = true;
+	}
 	if(stick1.GetRawButton(SCOOP_UP_BUTTON)){
+		scoopState = false;
 		scoopSolenoid1.Set(true);
 		scoopSolenoid2.Set(false);
 	}
 	else if(stick1.GetRawButton(SCOOP_DOWN_BUTTON)){
+		scoopState = true;
 		scoopSolenoid1.Set(false);
 		scoopSolenoid2.Set(true);		
 	}
 	
 	if (stick1.GetRawButton(SCOOP_BUTTON)){
 		brushMotor.Set(1);
-		elevatorMotor.Set(-0.65);
 //		rearRightMotor.Set(1);
 	}
 	else if (stick1.GetRawButton(SCOOP_REVERSE_BUTTON)){
 		brushMotor.Set(-1);
-		elevatorMotor.Set(0.65);
 //		rearRightMotor.Set(-1);
 	}
 	else {
 		brushMotor.Set(0);
-		elevatorMotor.Set(0);
 //		rearRightMotor.Set(0);
 	}
 	
 	//Deployment angle at 11.7
 	//Runs the elevator if Scoop is deployed.
-/*	if (scoopState){
-		elevatorMotor.Set(1);
-		//Run the Brush if Frisbee limit hasn't been reached
-		if (frisbeeCount < 4){
-			brushMotor.Set(1);
-		}
-		else{
-			brushMotor.Set(0);
-		}
+	if (scoopState){
+		elevatorMotor.Set(-0.8);
 	}
 	else{
 		elevatorMotor.Set(0);
 	}
-*/
+
 	//Sets the scoop solenoids to the current state
 //	scoopSolenoid1.Set(scoopState);
 //	scoopSolenoid2.Set(scoopState);
 	//Rising Edge detector. Sets previous values to thier current values.
 	previousFrisbeeLightValue = currentFrisbeeLightValue;
-	previousScoopButton = currentScoopButton;
 }
 
 const double startSpeed = 200;
