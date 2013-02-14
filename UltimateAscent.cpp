@@ -81,32 +81,26 @@ void UltimateAscent::Autonomous(void)
 			// Shoots first ball
 			while (IsAutonomous()){
 				flywheelMotor.Set(1);
-				log << "Set Launchers Out";
 				SetLauncherOut();
 				// Leaves piston out for .25 seconds
 				Wait(0.25);
-				log << "Set Launchers In";
 				SetLauncherIn();
 				// Waits for the flywheel to get up to speed between shots
 				Wait(2.5);
 				
 				// Shoots second ball
-				log << "Set Launchers Out";
 				SetLauncherOut();
 				// Leaves piston out for .25 seconds
 				Wait(0.25);
-				log << "Set Launchers In";
 				SetLauncherIn();
 				
 				// Waits for the flywheel to get up to speed between shots
 				Wait(2.5);
 				
 				// Shoots third ball
-				log << "Set Launchers Out";
 				SetLauncherOut();
 				// Leaves piston out for .25 seconds
 				Wait(0.25);
-				log << "Set Launchers In";
 				SetLauncherIn();
 				// Sets the flywheel speed to zero before teleop
 				flywheelMotor.Set(0);
@@ -300,16 +294,13 @@ void UltimateAscent::Shoot() {
 	// Leaves shooter out for 0.25 seconds
 	if (stopwatch.Get() >= 0.25 || waitForLeaving == true) {
 		if (stopwatch.Get() >= 0.5 || waitForLeaving == true) {
-			log << "set launchers to false\n";
 			SetLauncherFalse();
 		}
 		else {
-			log << "launcherOut set to true\n";
 			SetLauncherIn();
 		}
 	}
 	else {
-		log << "launcherIn set to true\n";
 		SetLauncherOut();
 	}
 	
@@ -354,18 +345,21 @@ void UltimateAscent::Shoot() {
 
 void UltimateAscent::SetLauncherOut()
 {
+	log << "Set Launcher Out\n";
 	launcherOut.Set(true);
 	launcherIn.Set(false);
 }
 
 void UltimateAscent::SetLauncherIn()
 {
+	log << "Set Launcher In\n";
 	launcherIn.Set(true);
 	launcherOut.Set(false);
 }
 
 void UltimateAscent::SetLauncherFalse()
 {
+	log << "Set Launcher False\n";
 	launcherIn.Set(false);
 	launcherOut.Set(false);
 }
