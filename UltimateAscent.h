@@ -83,20 +83,20 @@ class UltimateAscent : public SimpleRobot
 	static const UINT32 COMPRESSOR_SWITCH_PWM = 6;
 	
 	//Joystick 1 Buttons
-	static const int GRIPPIES_DOWN_BUTTON = 2;
+	static const UINT32 GRIPPIES_DOWN_BUTTON = 2;
 	// Lower Elevator up button
-	static const int SCOOP_BUTTON = 7;
+	static const UINT32 SCOOP_BUTTON = 7;
 	// Lower Elevator down button
-	static const int SCOOP_REVERSE_BUTTON = 8;
-	static const int SCOOP_UP_BUTTON = 10;
-	static const int SCOOP_DOWN_BUTTON = 9;
+	static const UINT32 SCOOP_REVERSE_BUTTON = 8;
+	static const UINT32 SCOOP_UP_BUTTON = 10;
+	static const UINT32 SCOOP_DOWN_BUTTON = 9;
 	
 	//Joystick 2 Buttons
 	static const UINT32 FIRE_BUTTON = 1;
-	static const int FLYWHEEL_ON_BUTTON = 9;
-	static const int FLYWHEEL_OFF_BUTTON = 6;
-	static const int ANGLE_UP_BUTTON = 11;
-	static const int ANGLE_DOWN_BUTTON = 10;
+	static const UINT32 FLYWHEEL_ON_BUTTON = 9;
+	static const UINT32 FLYWHEEL_OFF_BUTTON = 6;
+	static const UINT32 ANGLE_UP_BUTTON = 11;
+	static const UINT32 ANGLE_DOWN_BUTTON = 10;
 	
 	//VARIABLES
 	int frisbeeCount;
