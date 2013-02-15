@@ -28,7 +28,7 @@ double FlywheelEncoder::GetRate(){
 	}
 	previousLightValue = currentLightValue;
 	// Change periods(0.5s) to rpm(1 min)
-	return PeriodCounter () * 120;
+	return PeriodCounter () * 2;
 }
 
 double FlywheelEncoder::PIDGet(){

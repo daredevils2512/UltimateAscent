@@ -34,7 +34,7 @@ UltimateAscent::UltimateAscent(void):
 		rightMotorEncoder(RIGHT_MOTOR_ENCODER_PWM_A, RIGHT_MOTOR_ENCODER_PWM_B),
 		stopwatch(),
 		pidOutput(flywheelMotor),
-		flywheelSpeed(0.5, 0, 0, &flywheelEncoder, &pidOutput), // TODO:Tune PID
+		flywheelSpeed(1, 0.5, 0, &flywheelEncoder, &pidOutput), // TODO:Tune PID
 		myRobot(&frontLeftMotor, &rearLeftMotor, &frontRightMotor, &rearRightMotor),
 		stick1(1),
 		stick2(2),
@@ -45,9 +45,9 @@ UltimateAscent::UltimateAscent(void):
 		myRobot.SetExpiration(0.1);
 		stick1.SetAxisChannel(Joystick::kTwistAxis, 3);
 		stick1.SetAxisChannel(Joystick::kThrottleAxis, 4);
-		flywheelSpeed.Enable();
-		flywheelSpeed.SetInputRange(0, 5000);
-		flywheelSpeed.SetOutputRange(0, 5000);
+//		flywheelSpeed.Enable();
+		flywheelSpeed.SetInputRange(0, 3960);
+		flywheelSpeed.SetOutputRange(0, 3960);
 		compressor.Enabled();
 		SmartDashboard::init();
 	}
@@ -157,6 +157,7 @@ void UltimateAscent::OperatorControl(void)
 			SmartDashboard::PutBoolean("Frisbee4", frisbee4);
 			SmartDashboard::PutNumber("Potentiometer",ShooterAngle(potentiometer.GetAverageVoltage()));
 			SmartDashboard::PutNumber("Fly Wheel Motor PID", flywheelMotor.Get());
+			SmartDashboard::PutNumber("Fly Wheel RPM", flywheelEncoder.GetRate());
 		}
 	}
 
@@ -333,23 +334,23 @@ void UltimateAscent::Shoot() {
 	if (stick2.GetRawButton(FLYWHEEL_ON_BUTTON)) {
 		log << "flyWheel desiredSpeed set to startSpeed\n";
 		flywheelState = true;
-//		flywheelSpeed.Enable();
+		flywheelSpeed.Enable();
 		desiredSpeed = startSpeed;
 	}
 	else if (stick2.GetRawButton(FLYWHEEL_OFF_BUTTON)) {
 		log << "flyWheel desiredSpeed set to 0\n";
 		flywheelState = false;
-//		flywheelSpeed.Disable();
+		flywheelSpeed.Disable();
 		desiredSpeed = 0;
 	}
 	if (flywheelState){
-//		desiredSpeed = (stick2.GetThrottle() + 1) * 50;
-//		flywheelSpeed.SetSetpoint(desiredSpeed);
-		flywheelMotor.Set(1);
+		desiredSpeed = 40;
+		flywheelSpeed.SetSetpoint(desiredSpeed);
+//		flywheelMotor.Set(1);
 	}
-	else {
-		flywheelMotor.Set(0);
-	}
+//	else {
+//		flywheelMotor.Set(0);
+//	}
 }
 
 void UltimateAscent::SetLauncherOut()
