@@ -5,6 +5,8 @@
 using al::smart_ptr;
 using al::handler;
 
+const double UltimateAscent::LAUNCHER_WAIT_TIME = 0.25;
+
 UltimateAscent::UltimateAscent(void):
 		// these must be initialized in the same order as they are declared in the header file.
 		frisbeeCount(0),
@@ -82,16 +84,16 @@ void UltimateAscent::Autonomous(void)
 			while (IsAutonomous()){
 				flywheelMotor.Set(1);
 				SetLauncherOut();
-				// Leaves piston out for .25 seconds
-				Wait(0.25);
+				// Leaves piston out for a short time
+				Wait(LAUNCHER_WAIT_TIME);
 				SetLauncherIn();
 				// Waits for the flywheel to get up to speed between shots
 				Wait(2.5);
 				
 				// Shoots second ball
 				SetLauncherOut();
-				// Leaves piston out for .25 seconds
-				Wait(0.25);
+				// Leaves piston out for a short time
+				Wait(LAUNCHER_WAIT_TIME);
 				SetLauncherIn();
 				
 				// Waits for the flywheel to get up to speed between shots
@@ -99,8 +101,8 @@ void UltimateAscent::Autonomous(void)
 				
 				// Shoots third ball
 				SetLauncherOut();
-				// Leaves piston out for .25 seconds
-				Wait(0.25);
+				// Leaves piston out for a short time
+				Wait(LAUNCHER_WAIT_TIME);
 				SetLauncherIn();
 				// Sets the flywheel speed to zero before teleop
 				flywheelMotor.Set(0);
@@ -291,8 +293,9 @@ void UltimateAscent::Shoot() {
 		log << "Frisbees - 1\n";
 	}
 	
-	// Leaves shooter out for 0.25 seconds
-	if (stopwatch.Get() >= 0.25 || waitForLeaving == true) {
+	// Leaves shooter out for a short time
+	if (stopwatch.Get() >= LAUNCHER_WAIT_TIME || waitForLeaving == true) {
+		// TODO: Check whether 0.5 should be replaced by LAUNCHER_WAIT_TIME * 2
 		if (stopwatch.Get() >= 0.5 || waitForLeaving == true) {
 			SetLauncherFalse();
 		}

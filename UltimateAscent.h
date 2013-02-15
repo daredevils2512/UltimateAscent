@@ -98,6 +98,8 @@ class UltimateAscent : public SimpleRobot
 	static const UINT32 ANGLE_UP_BUTTON = 11;
 	static const UINT32 ANGLE_DOWN_BUTTON = 10;
 	
+	// Time that the launcher stays out
+	static const double LAUNCHER_WAIT_TIME;
 	//VARIABLES
 	int frisbeeCount;
 	
@@ -144,8 +146,10 @@ class UltimateAscent : public SimpleRobot
 	
 	void Scoop();
 	
+	// Fires Frisbee
 	void SetLauncherOut();
 	
+	// Brings Launcher back
 	void SetLauncherIn();
 	
 	void SetLauncherFalse();
