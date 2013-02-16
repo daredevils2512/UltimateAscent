@@ -7,6 +7,7 @@ private:
 Talon &flywheelMotor;
 	
 public:
+
 	FlywheelMotor(Talon &motor);
 	
 	virtual ~FlywheelMotor(){}

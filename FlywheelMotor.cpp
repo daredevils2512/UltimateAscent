@@ -1,7 +1,6 @@
 #include <WPILib.h>
 #include "FlywheelMotor.h"
 
-
 FlywheelMotor::FlywheelMotor(Talon &motor):
 	flywheelMotor(motor)
 {

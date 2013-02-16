@@ -101,7 +101,7 @@ class UltimateAscent : public SimpleRobot
 	//VARIABLES
 	int frisbeeCount;
 	
-	al::logger log;
+//	al::logger log;
 	
 	Timer timer;
 	Talon frontLeftMotor;
