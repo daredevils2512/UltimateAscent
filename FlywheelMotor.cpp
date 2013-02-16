@@ -7,5 +7,5 @@ FlywheelMotor::FlywheelMotor(Talon &motor):
 	
 }
 void FlywheelMotor::PIDWrite(float output){
-	flywheelMotor.Set(output / 70);
+	flywheelMotor.Set(output / 64);
 }
