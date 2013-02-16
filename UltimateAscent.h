@@ -104,6 +104,7 @@ class UltimateAscent : public SimpleRobot
 //	al::logger log;
 	
 	Timer timer;
+	Timer flywheelTimer;
 	Talon frontLeftMotor;
 	Talon frontRightMotor;
 	Talon rearLeftMotor;

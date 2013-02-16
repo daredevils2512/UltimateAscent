@@ -10,6 +10,7 @@ UltimateAscent::UltimateAscent(void):
 		frisbeeCount(0),
 //		log(CreateLogger()),
 		timer(),
+		flywheelTimer(),
 		frontLeftMotor(FRONT_LEFT_MOTOR_SIDECAR, FRONT_LEFT_MOTOR_PWM),
 		frontRightMotor(FRONT_RIGHT_MOTOR_SIDECAR, FRONT_RIGHT_MOTOR_PWM),
 		rearLeftMotor(REAR_LEFT_MOTOR_SIDECAR, REAR_LEFT_MOTOR_PWM),
@@ -131,6 +132,7 @@ void UltimateAscent::OperatorControl(void)
 	{
 		static int loopCounter = 0;
 		timer.Start();
+		flywheelTimer.Start();
 //		log << "Begining Operator Control\n";
 //		myRobot.SetSafetyEnabled(false);
 		while (IsOperatorControl())
@@ -169,8 +171,11 @@ void UltimateAscent::OperatorControl(void)
 //			SmartDashboard::PutBoolean("Frisbee3", frisbee3);
 //			SmartDashboard::PutBoolean("Frisbee4", frisbee4);
 			flywheelEncoder.FlywheelCounter();
-			if(timer.Get() >= 0.1){
+			if(flywheelTimer.Get() >= 0.5){
 				flywheelEncoder.PeriodCounter();
+				flywheelTimer.Reset();
+			}
+			if(timer.Get() >= 0.1){
 				SmartDashboard::PutNumber("Potentiometer",ShooterAngle(potentiometer.GetAverageVoltage()));
 				SmartDashboard::PutNumber("Fly Wheel Motor PID", flywheelMotor.Get());
 				SmartDashboard::PutNumber("Fly Wheel RPS", flywheelEncoder.GetRate());
@@ -406,7 +411,7 @@ void UltimateAscent::Shoot() {
 	}
 	flywheelSpeed.SetSetpoint(desiredSpeed);
 	if (flywheelState){
-		flywheelMotor.Set(0.3);
+		flywheelMotor.Set(1);
 	}
 	else {
 		flywheelMotor.Set(0);
