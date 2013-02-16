@@ -13,9 +13,9 @@ private:
 	DigitalInput &flywheelLightSensor;
 	Timer flywheelStopwatch;
 	
-	static const double period;
 	int flywheelCounter;
-	int rotationsPerPeriod;
+	double rotationsPerPeriod;
+	
 	
 public:
 	//Default Constructer, initializzes thinz to zero
@@ -25,7 +25,9 @@ public:
 	virtual ~FlywheelEncoder(){}
 	
 	// Counts number of rotations per period
-	int PeriodCounter ();
+	double PeriodCounter ();
+	
+	void FlywheelCounter();
 	
 	// Counts rotations with rising edge detector
 	double GetRate ();

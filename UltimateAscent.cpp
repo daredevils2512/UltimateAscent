@@ -45,7 +45,7 @@ UltimateAscent::UltimateAscent(void):
 		myRobot.SetExpiration(0.1);
 		stick1.SetAxisChannel(Joystick::kTwistAxis, 3);
 		stick1.SetAxisChannel(Joystick::kThrottleAxis, 4);
-		flywheelSpeed.Enable();
+//		flywheelSpeed.Enable();
 		flywheelSpeed.SetInputRange(0, 70); //changed from 3960 to 68
 		flywheelSpeed.SetOutputRange(0, 70); //changed from 3960 to 1
 		compressor.Enabled();
@@ -130,6 +130,7 @@ void UltimateAscent::Autonomous(void)
 void UltimateAscent::OperatorControl(void)
 	{
 		static int loopCounter = 0;
+		timer.Start();
 //		log << "Begining Operator Control\n";
 //		myRobot.SetSafetyEnabled(false);
 		while (IsOperatorControl())
@@ -167,10 +168,15 @@ void UltimateAscent::OperatorControl(void)
 //			SmartDashboard::PutBoolean("Frisbee2", frisbee2);
 //			SmartDashboard::PutBoolean("Frisbee3", frisbee3);
 //			SmartDashboard::PutBoolean("Frisbee4", frisbee4);
-//			SmartDashboard::PutNumber("Potentiometer",ShooterAngle(potentiometer.GetAverageVoltage()));
-//			SmartDashboard::PutNumber("Fly Wheel Motor PID", flywheelMotor.Get());
-//			SmartDashboard::PutNumber("Fly Wheel RPS", flywheelEncoder.GetRate());
-//			SmartDashboard::PutNumber("Loop Counter", loopCounter);
+			flywheelEncoder.FlywheelCounter();
+			if(timer.Get() >= 0.1){
+				flywheelEncoder.PeriodCounter();
+				SmartDashboard::PutNumber("Potentiometer",ShooterAngle(potentiometer.GetAverageVoltage()));
+				SmartDashboard::PutNumber("Fly Wheel Motor PID", flywheelMotor.Get());
+				SmartDashboard::PutNumber("Fly Wheel RPS", flywheelEncoder.GetRate());
+				SmartDashboard::PutNumber("Loop Counter", loopCounter);
+				timer.Reset();
+			}
 		}
 	}
 
@@ -282,7 +288,7 @@ void UltimateAscent::Scoop(){
 const double startSpeed = 68; //changed from 200 to 68
 
 void UltimateAscent::Shoot() {
-//	static bool flywheelState = false;
+	static bool flywheelState = false;
 //	log << "Begining Shoot\n";
 	if (stick2.GetRawButton(ANGLE_UP_BUTTON)){
 		shooterAngleMotor.Set(Relay::kForward);
@@ -339,9 +345,8 @@ void UltimateAscent::Shoot() {
 		priorTriggerButton = false;
 	}
 	
-	
-	// double currentSpeed = 0;
 	static double desiredSpeed = 0;
+/*	 double currentSpeed = 0;
 	// write desiredSpeed to dashboard
 	SmartDashboard::PutNumber("Disired Flywheel Speed", desiredSpeed);
 	Timer StopwatchPID;
@@ -385,28 +390,27 @@ void UltimateAscent::Shoot() {
 			lastPID = false;
 		}
 	}
-	
+*/	
 	// Turn flywheels on and off
-	/*if (stick2.GetRawButton(FLYWHEEL_ON_BUTTON)) {
-		log << "flyWheel desiredSpeed set to startSpeed\n";
+	if (stick2.GetRawButton(FLYWHEEL_ON_BUTTON)) {
+//		log << "flyWheel desiredSpeed set to startSpeed\n";
 		flywheelState = true;
-		flywheelSpeed.Enable();
-		desiredSpeed = startSpeed;
+//		flywheelSpeed.Enable();
+//		desiredSpeed = 67;
 	}
 	else if (stick2.GetRawButton(FLYWHEEL_OFF_BUTTON)) {
-		log << "flyWheel desiredSpeed set to 0\n";
+//		log << "flyWheel desiredSpeed set to 0\n";
 		flywheelState = false;
-		flywheelSpeed.Disable();
+//		flywheelSpeed.Disable();
 		desiredSpeed = 0;
 	}
+	flywheelSpeed.SetSetpoint(desiredSpeed);
 	if (flywheelState){
-		desiredSpeed = 67;//Normal operation at 67
-		flywheelSpeed.SetSetpoint(desiredSpeed);
-//		flywheelMotor.Set(1);
+		flywheelMotor.Set(0.3);
 	}
-//	else {
-//		flywheelMotor.Set(0);
-//	}*/
+	else {
+		flywheelMotor.Set(0);
+	}
 }
 
 void UltimateAscent::SetLauncherOut()
