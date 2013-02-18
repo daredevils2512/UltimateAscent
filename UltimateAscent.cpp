@@ -63,37 +63,13 @@ void UltimateAscent::Autonomous(void)
 				SmartDashboard::PutNumber("Potentiometer",ShooterAngle(potentiometer.GetAverageVoltage()));
 			}
 			shooterAngleMotor.Set(Relay::kOff);
-			// Shoots first frisbee
-			SetLauncherOut();
-			// Leaves piston out for .25 seconds
-			Wait(0.25);
-			SetLauncherIn();
-			// Waits for the flywheel to get up to speed between shots
-			Wait(1.25);
 			
-			// Shoots second frisbee
-			SetLauncherOut();
-			// Leaves piston out for .25 seconds
-			Wait(0.25);
-			SetLauncherIn();
-			
-			// Waits for the flywheel to get up to speed between shots
-			Wait(1.25);
-			
-			// Shoots third frisbee
-			SetLauncherOut();
-			// Leaves piston out for .25 seconds
-			Wait(0.25);
-			SetLauncherIn();
-			
-			Wait(1.25);
-			
-			// Shoots fourth frisbee
-			SetLauncherOut();
-			// Leaves piston out for .25 seconds
-			Wait(0.25);
-			SetLauncherIn();
-						
+			for (int i = 0; i < 4; i++) {
+				AutonomousShoot();
+				if (i != 3) {
+					Wait(1.25);
+				}
+			}
 			// Sets the flywheel speed to zero before teleop
 			flywheelSpeed.SetSetpoint(0);
 			flywheelSpeed.Disable();
@@ -310,6 +286,13 @@ void UltimateAscent::SetLauncherFalse()
 {
 	launcherIn.Set(false);
 	launcherOut.Set(false);
+}
+void UltimateAscent::AutonomousShoot ()
+{
+	SetLauncherOut();
+	// Leaves piston out for .25 seconds
+	Wait(0.25);
+	SetLauncherIn();
 }
 float UltimateAscent::ShooterAngle(float pot)
 {

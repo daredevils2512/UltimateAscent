@@ -142,6 +142,8 @@ class UltimateAscent : public SimpleRobot
 	
 	void SetLauncherFalse();
 	
+	void AutonomousShoot();
+	
 	float ShooterAngle(float pot);
 public:
 	UltimateAscent(void);
