@@ -79,7 +79,7 @@ class UltimateAscent : public SimpleRobot
 	// Compressor
 	static const UINT8 COMPRESSOR_RELAY_SIDECAR = DIGITAL_SIDECAR_1;
 	static const UINT32 COMPRESSOR_RELAY_PWM = 1;
-	static const UINT8 COMPRESSOR_SWITCH_SIDECAR = DIGITAL_SIDECAR_2;
+	static const UINT8 COMPRESSOR_SWITCH_SIDECAR = DIGITAL_SIDECAR_1;
 	static const UINT32 COMPRESSOR_SWITCH_PWM = 6;
 	
 	//Joystick 1 Buttons

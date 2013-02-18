@@ -68,19 +68,19 @@ void UltimateAscent::Autonomous(void)
 //		log << "Begining Autonomous" << al::endl;
 		
 		if (IsAutonomous ()) {
-			while (IsAutonomous() && ShooterAngle(potentiometer.GetAverageVoltage()) > 11.7){
+			while (IsAutonomous() && ShooterAngle(potentiometer.GetAverageVoltage()) > 12.4){
 				shooterAngleMotor.Set(Relay::kForward);
 				SmartDashboard::PutNumber("Potentiometer",ShooterAngle(potentiometer.GetAverageVoltage()));
 			}
 			while (IsAutonomous() && ShooterAngle(potentiometer.GetAverageVoltage()) < 19){
 				shooterAngleMotor.Set(Relay::kReverse);
+				flywheelSpeed.SetSetpoint(128);
 				SmartDashboard::PutNumber("Potentiometer",ShooterAngle(potentiometer.GetAverageVoltage()));
 			}
 			shooterAngleMotor.Set(Relay::kOff);
-			flywheelSpeed.SetSetpoint(67);
 			// Waits in order to let the flywheel to get up to speed
-			 Wait (3);
-			// Shoots first ball
+			// Wait (3);
+			// Shoots first frisbee
 //			log << "Set Launchers Out";
 			SetLauncherOut();
 			// Leaves piston out for .25 seconds
@@ -88,9 +88,9 @@ void UltimateAscent::Autonomous(void)
 //			log << "Set Launchers In";
 			SetLauncherIn();
 			// Waits for the flywheel to get up to speed between shots
-			Wait(2.5);
+			Wait(1.25);
 			
-			// Shoots second ball
+			// Shoots second frisbee
 //			log << "Set Launchers Out";
 			SetLauncherOut();
 			// Leaves piston out for .25 seconds
@@ -99,9 +99,9 @@ void UltimateAscent::Autonomous(void)
 			SetLauncherIn();
 			
 			// Waits for the flywheel to get up to speed between shots
-			Wait(2.5);
+			Wait(1.25);
 			
-			// Shoots third ball
+			// Shoots third frisbee
 //			log << "Set Launchers Out";
 			SetLauncherOut();
 			// Leaves piston out for .25 seconds
@@ -109,9 +109,9 @@ void UltimateAscent::Autonomous(void)
 //			log << "Set Launchers In";
 			SetLauncherIn();
 			
-			Wait(2.5);
+			Wait(1.25);
 			
-			// Shoots fourth ball
+			// Shoots fourth frisbee
 //			log << "Set Launchers Out";
 			SetLauncherOut();
 			// Leaves piston out for .25 seconds
@@ -175,7 +175,7 @@ void UltimateAscent::OperatorControl(void)
 				flywheelEncoder.PeriodCounter();
 				flywheelTimer.Reset();
 			}
-			if(timer.Get() >= 0.1){
+			if(timer.Get() >= 1){
 				SmartDashboard::PutNumber("Potentiometer",ShooterAngle(potentiometer.GetAverageVoltage()));
 				SmartDashboard::PutNumber("Fly Wheel Motor PID", flywheelMotor.Get());
 				SmartDashboard::PutNumber("Fly Wheel RPS", flywheelEncoder.GetRate());
@@ -210,7 +210,7 @@ void UltimateAscent::Drive(){
 	// Joystick Axis Inputs
 	float xOutput = ConvertAxis(stick1.GetX());
 	float yOutput = ConvertAxis(stick1.GetY());
-	float twistOutput = ConvertAxis(stick1.GetTwist()) / 2;
+	float twistOutput = ConvertAxis(stick1.GetTwist()) / (1.5);
 	
 	
 	//Grippy Deployment
@@ -296,10 +296,10 @@ const double startSpeed = 68; //changed from 200 to 68
 void UltimateAscent::Shoot() {
 	static bool flywheelState = false;
 //	log << "Begining Shoot\n";
-	if (stick2.GetRawButton(ANGLE_UP_BUTTON)){
+	if (stick2.GetRawButton(ANGLE_UP_BUTTON) && ShooterAngle(potentiometer.GetAverageVoltage()) >= 10){
 		shooterAngleMotor.Set(Relay::kForward);
 	}
-	else if (stick2.GetRawButton(ANGLE_DOWN_BUTTON)){
+	else if (stick2.GetRawButton(ANGLE_DOWN_BUTTON)  && ShooterAngle(potentiometer.GetAverageVoltage()) <= 20){
 		shooterAngleMotor.Set(Relay::kReverse);
 	}
 	else{
@@ -351,7 +351,7 @@ void UltimateAscent::Shoot() {
 		priorTriggerButton = false;
 	}
 	
-	static double desiredSpeed = 0;
+//	static double desiredSpeed = 0;
 /*	 double currentSpeed = 0;
 	// write desiredSpeed to dashboard
 	SmartDashboard::PutNumber("Disired Flywheel Speed", desiredSpeed);
@@ -401,23 +401,23 @@ void UltimateAscent::Shoot() {
 	if (stick2.GetRawButton(FLYWHEEL_ON_BUTTON)) {
 //		log << "flyWheel desiredSpeed set to startSpeed\n";
 		flywheelState = true;
-		flywheelSpeed.Enable();
-		desiredSpeed = 128;
-		flywheelSpeed.SetSetpoint(desiredSpeed);
+//		flywheelSpeed.Enable();
+//		desiredSpeed = 128;
+//		flywheelSpeed.SetSetpoint(desiredSpeed);
 	}
 	else if (stick2.GetRawButton(FLYWHEEL_OFF_BUTTON)) {
 //		log << "flyWheel desiredSpeed set to 0\n";
 		flywheelState = false;
-		flywheelSpeed.Disable();
-		desiredSpeed = 0;
-		flywheelSpeed.SetSetpoint(desiredSpeed);
+//		flywheelSpeed.Disable();
+//		desiredSpeed = 0;
+//		flywheelSpeed.SetSetpoint(desiredSpeed);
 	}
-//	if (flywheelState){
-//		flywheelMotor.Set(1);
-//	}
-//	else {
-//		flywheelMotor.Set(0);
-//	}
+	if (flywheelState){
+		flywheelMotor.Set((stick2.GetRawAxis(3) - 1) / -2);
+	}
+	else {
+		flywheelMotor.Set(0);
+	}
 }
 
 void UltimateAscent::SetLauncherOut()
