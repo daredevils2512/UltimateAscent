@@ -177,12 +177,10 @@ void UltimateAscent::OperatorControl(void)
 			}
 			if(timer.Get() >= 1){
 				SmartDashboard::PutNumber("Potentiometer",ShooterAngle(potentiometer.GetAverageVoltage()));
-				SmartDashboard::PutNumber("Fly Wheel Motor PID", flywheelMotor.Get());
 				SmartDashboard::PutNumber("Fly Wheel RPS", flywheelEncoder.GetRate());
-				SmartDashboard::PutNumber("Loop Counter", loopCounter);
-				SmartDashboard::PutNumber("Desired Speed", flywheelSpeed.GetSetpoint());
 				timer.Reset();
 			}
+			Wait(0.005);
 		}
 	}
 
@@ -236,10 +234,12 @@ void UltimateAscent::Scoop(){
 //	log << "Begining Scoop\n";
 	static bool scoopState = false;
 	//Rising edge detector variables for Toggle Button and Frisbee Light Sensor
+	static bool previousScoopButton = false;
 	static bool previousFrisbeeLightValue = false;
 	bool currentFrisbeeLightValue = frisbeeLightSensor.Get();
+	bool currentScoopButton = stick1.GetRawButton(SCOOP_TOGGLE_BUTTON);
 	
-	//Count Frisbees if Light Sensor is tripped on Rising Edge
+	//Count Frisbees if Light Sensor is tripped on Rising Edgde
 //	if (currentFrisbeeLightValue == true && previousFrisbeeLightValue == false){
 //		frisbeeCount ++;
 //	}
@@ -251,22 +251,24 @@ void UltimateAscent::Scoop(){
 	else if(stick1.GetRawButton(4)){
 		scoopState = true;
 	}
-	if(stick1.GetRawButton(SCOOP_UP_BUTTON)){
-		scoopState = false;
-		scoopSolenoid1.Set(true);
-		scoopSolenoid2.Set(false);
+	if(currentScoopButton == true && previousScoopButton == false){
+		if(scoopSolenoid1.Get() == false){
+			scoopState = false;
+			scoopSolenoid1.Set(true);
+			scoopSolenoid2.Set(false);			
+		}
+		else{
+			scoopState = true;
+			scoopSolenoid1.Set(false);
+			scoopSolenoid2.Set(true);
+		}
+
 	}
-	else if(stick1.GetRawButton(SCOOP_DOWN_BUTTON)){
-		scoopState = true;
-		scoopSolenoid1.Set(false);
-		scoopSolenoid2.Set(true);		
-	}
-	
-	if (stick1.GetRawButton(SCOOP_BUTTON)){
+	if (stick1.GetRawButton(BRUSH_BUTTON)){
 		brushMotor.Set(1);
 //		rearRightMotor.Set(1);
 	}
-	else if (stick1.GetRawButton(SCOOP_REVERSE_BUTTON)){
+	else if (stick1.GetRawButton(BRUSH_REVERSE_BUTTON)){
 		brushMotor.Set(-1);
 //		rearRightMotor.Set(-1);
 	}
@@ -288,6 +290,7 @@ void UltimateAscent::Scoop(){
 //	scoopSolenoid1.Set(scoopState);
 //	scoopSolenoid2.Set(scoopState);
 	//Rising Edge detector. Sets previous values to thier current values.
+	previousScoopButton = currentScoopButton;
 	previousFrisbeeLightValue = currentFrisbeeLightValue;
 }
 

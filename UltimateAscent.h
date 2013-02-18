@@ -83,18 +83,24 @@ class UltimateAscent : public SimpleRobot
 	static const UINT32 COMPRESSOR_SWITCH_PWM = 6;
 	
 	//Joystick 1 Buttons
+	/* Tucker wants:
+	 * Button 8: toggle scoop
+	 * Button 7: scoop forward
+	 * Button 9: scoop reverse
+	 */
 	static const int GRIPPIES_DOWN_BUTTON = 2;
 	// Lower Elevator up button
-	static const int SCOOP_BUTTON = 7;
+//	static const int SCOOP_BUTTON = 7;
 	// Lower Elevator down button
-	static const int SCOOP_REVERSE_BUTTON = 8;
-	static const int SCOOP_UP_BUTTON = 10;
-	static const int SCOOP_DOWN_BUTTON = 9;
+	static const int BRUSH_BUTTON = 7;
+//	static const int SCOOP_UP_BUTTON = 10;
+	static const int BRUSH_REVERSE_BUTTON = 9;
+	static const int SCOOP_TOGGLE_BUTTON = 8;
 	
 	//Joystick 2 Buttons
 	static const UINT32 FIRE_BUTTON = 1;
-	static const int FLYWHEEL_ON_BUTTON = 9;
-	static const int FLYWHEEL_OFF_BUTTON = 6;
+	static const int FLYWHEEL_ON_BUTTON = 4;
+	static const int FLYWHEEL_OFF_BUTTON = 5;
 	static const int ANGLE_UP_BUTTON = 11;
 	static const int ANGLE_DOWN_BUTTON = 10;
 	
