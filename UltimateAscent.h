@@ -1,5 +1,4 @@
 #include <WPILib.h>
-#include <al.hpp>
 #include "FlywheelEncoder.h"
 #include "FlywheelMotor.h"
 #pragma once
@@ -83,17 +82,8 @@ class UltimateAscent : public SimpleRobot
 	static const UINT32 COMPRESSOR_SWITCH_PWM = 6;
 	
 	//Joystick 1 Buttons
-	/* Tucker wants:
-	 * Button 8: toggle scoop
-	 * Button 7: scoop forward
-	 * Button 9: scoop reverse
-	 */
 	static const int GRIPPIES_DOWN_BUTTON = 2;
-	// Lower Elevator up button
-//	static const int SCOOP_BUTTON = 7;
-	// Lower Elevator down button
 	static const int BRUSH_BUTTON = 7;
-//	static const int SCOOP_UP_BUTTON = 10;
 	static const int BRUSH_REVERSE_BUTTON = 9;
 	static const int SCOOP_TOGGLE_BUTTON = 8;
 	
@@ -105,10 +95,6 @@ class UltimateAscent : public SimpleRobot
 	static const int ANGLE_DOWN_BUTTON = 10;
 	
 	//VARIABLES
-	int frisbeeCount;
-	
-//	al::logger log;
-	
 	Timer timer;
 	Timer flywheelTimer;
 	Talon frontLeftMotor;
@@ -136,13 +122,12 @@ class UltimateAscent : public SimpleRobot
 	Timer stopwatch;
 	FlywheelMotor pidOutput;
 	PIDController flywheelSpeed;
-	RobotDrive myRobot; // robot drive system
-	Joystick stick1; // only joystick
+	RobotDrive myRobot;
+	Joystick stick1;
 	Joystick stick2;
 	AnalogChannel potentiometer;
 	
 	
-	al::logger CreateLogger();
 	float ConvertAxis(float input);
 	
 	void Shoot();	

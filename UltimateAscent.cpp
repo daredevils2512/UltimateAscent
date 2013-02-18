@@ -2,13 +2,9 @@
 #include <cmath>
 #include "UltimateAscent.h"
 
-//using al::smart_ptr;
-//using al::handler;
 
 UltimateAscent::UltimateAscent(void):
 		// these must be initialized in the same order as they are declared in the header file.
-		frisbeeCount(0),
-//		log(CreateLogger()),
 		timer(),
 		flywheelTimer(),
 		frontLeftMotor(FRONT_LEFT_MOTOR_SIDECAR, FRONT_LEFT_MOTOR_PWM),
@@ -47,26 +43,15 @@ UltimateAscent::UltimateAscent(void):
 		stick1.SetAxisChannel(Joystick::kTwistAxis, 3);
 		stick1.SetAxisChannel(Joystick::kThrottleAxis, 4);
 		flywheelSpeed.Enable();
-		flywheelSpeed.SetInputRange(0, 128); //changed from 3960 to 68
-		flywheelSpeed.SetOutputRange(0, 64); //changed from 3960 to 1
+		flywheelSpeed.SetInputRange(0, 128);
+		flywheelSpeed.SetOutputRange(0, 64);
 		compressor.Enabled();
 		SmartDashboard::init();
 	}
 
-/*al::logger UltimateAscent::CreateLogger(){
-	al::std_creator factory;
-	factory.add_handler(smart_ptr<handler>(new al::cerr_handler()));
-	smart_ptr<handler> h = smart_ptr<handler>(new al::file_handler("log"));
-	factory.add_handler(h);
-	return factory.spawn("UltimateAscent");
-}
-*/
 
 void UltimateAscent::Autonomous(void)
-	{
-//		GetWatchdog().SetEnabled(false);
-//		log << "Begining Autonomous" << al::endl;
-		
+	{		
 		if (IsAutonomous ()) {
 			while (IsAutonomous() && ShooterAngle(potentiometer.GetAverageVoltage()) > 12.4){
 				shooterAngleMotor.Set(Relay::kForward);
@@ -78,66 +63,50 @@ void UltimateAscent::Autonomous(void)
 				SmartDashboard::PutNumber("Potentiometer",ShooterAngle(potentiometer.GetAverageVoltage()));
 			}
 			shooterAngleMotor.Set(Relay::kOff);
-			// Waits in order to let the flywheel to get up to speed
-			// Wait (3);
 			// Shoots first frisbee
-//			log << "Set Launchers Out";
 			SetLauncherOut();
 			// Leaves piston out for .25 seconds
 			Wait(0.25);
-//			log << "Set Launchers In";
 			SetLauncherIn();
 			// Waits for the flywheel to get up to speed between shots
 			Wait(1.25);
 			
 			// Shoots second frisbee
-//			log << "Set Launchers Out";
 			SetLauncherOut();
 			// Leaves piston out for .25 seconds
 			Wait(0.25);
-//			log << "Set Launchers In";
 			SetLauncherIn();
 			
 			// Waits for the flywheel to get up to speed between shots
 			Wait(1.25);
 			
 			// Shoots third frisbee
-//			log << "Set Launchers Out";
 			SetLauncherOut();
 			// Leaves piston out for .25 seconds
 			Wait(0.25);
-//			log << "Set Launchers In";
 			SetLauncherIn();
 			
 			Wait(1.25);
 			
 			// Shoots fourth frisbee
-//			log << "Set Launchers Out";
 			SetLauncherOut();
 			// Leaves piston out for .25 seconds
 			Wait(0.25);
-//			log << "Set Launchers In";
 			SetLauncherIn();
 						
 			// Sets the flywheel speed to zero before teleop
 			flywheelSpeed.SetSetpoint(0);
 			flywheelSpeed.Disable();
 		}
-		
-//		log << "Ending Autonomous\n";
 	}
 
 
 void UltimateAscent::OperatorControl(void)
 	{
-		static int loopCounter = 0;
 		timer.Start();
 		flywheelTimer.Start();
-//		log << "Begining Operator Control\n";
-//		myRobot.SetSafetyEnabled(false);
 		while (IsOperatorControl())
 		{
-			loopCounter++;
 			Drive();
 			Scoop();
 			Shoot();
@@ -148,28 +117,6 @@ void UltimateAscent::OperatorControl(void)
 			else{
 				compressor.Stop();
 			}
-			// Keep track of frisbees in robot
-//			bool frisbee1 = false;
-//			bool frisbee2 = false;
-//			bool frisbee3 = false;
-//			bool frisbee4 = false;
-//			
-//			if (frisbeeCount >= 1) {
-//				frisbee1 = true;
-//			}
-//			if (frisbeeCount >= 2) {
-//				frisbee2 = true;
-//			}
-//			if (frisbeeCount >= 3) {
-//				frisbee3 = true;
-//			}
-//			if (frisbeeCount == 4) {
-//				frisbee4 = true;
-//			}
-//			SmartDashboard::PutBoolean("Frisbee1", frisbee1);
-//			SmartDashboard::PutBoolean("Frisbee2", frisbee2);
-//			SmartDashboard::PutBoolean("Frisbee3", frisbee3);
-//			SmartDashboard::PutBoolean("Frisbee4", frisbee4);
 			flywheelEncoder.FlywheelCounter();
 			if(flywheelTimer.Get() >= 0.5){
 				flywheelEncoder.PeriodCounter();
@@ -204,7 +151,6 @@ float UltimateAscent::ConvertAxis(float input){
 
 void UltimateAscent::Drive(){
 	
-//	log << "Begining Drive\n";
 	// Joystick Axis Inputs
 	float xOutput = ConvertAxis(stick1.GetX());
 	float yOutput = ConvertAxis(stick1.GetY());
@@ -213,7 +159,6 @@ void UltimateAscent::Drive(){
 	
 	//Grippy Deployment
 	if (stick1.GetRawButton(GRIPPIES_DOWN_BUTTON)){
-//		log << "Grippies down button pressed\n";
 		xOutput = 0;
 		solenoid1.Set(false);
 		solenoid2.Set(true);
@@ -231,7 +176,6 @@ void UltimateAscent::Drive(){
 }
 
 void UltimateAscent::Scoop(){
-//	log << "Begining Scoop\n";
 	static bool scoopState = false;
 	//Rising edge detector variables for Toggle Button and Frisbee Light Sensor
 	static bool previousScoopButton = false;
@@ -239,10 +183,6 @@ void UltimateAscent::Scoop(){
 	bool currentFrisbeeLightValue = frisbeeLightSensor.Get();
 	bool currentScoopButton = stick1.GetRawButton(SCOOP_TOGGLE_BUTTON);
 	
-	//Count Frisbees if Light Sensor is tripped on Rising Edgde
-//	if (currentFrisbeeLightValue == true && previousFrisbeeLightValue == false){
-//		frisbeeCount ++;
-//	}
 	
 	//Toggle the state of the Scoop. Deployed or Undeployed
 	if (stick1.GetRawButton(6)){
@@ -266,15 +206,12 @@ void UltimateAscent::Scoop(){
 	}
 	if (stick1.GetRawButton(BRUSH_BUTTON)){
 		brushMotor.Set(1);
-//		rearRightMotor.Set(1);
 	}
 	else if (stick1.GetRawButton(BRUSH_REVERSE_BUTTON)){
 		brushMotor.Set(-1);
-//		rearRightMotor.Set(-1);
 	}
 	else {
 		brushMotor.Set(0);
-//		rearRightMotor.Set(0);
 	}
 	
 	//Deployment angle at 11.7
@@ -286,19 +223,13 @@ void UltimateAscent::Scoop(){
 		elevatorMotor.Set(0);
 	}
 
-	//Sets the scoop solenoids to the current state
-//	scoopSolenoid1.Set(scoopState);
-//	scoopSolenoid2.Set(scoopState);
 	//Rising Edge detector. Sets previous values to thier current values.
 	previousScoopButton = currentScoopButton;
 	previousFrisbeeLightValue = currentFrisbeeLightValue;
 }
 
-const double startSpeed = 68; //changed from 200 to 68
-
 void UltimateAscent::Shoot() {
 	static bool flywheelState = false;
-//	log << "Begining Shoot\n";
 	if (stick2.GetRawButton(ANGLE_UP_BUTTON) && ShooterAngle(potentiometer.GetAverageVoltage()) >= 10){
 		shooterAngleMotor.Set(Relay::kForward);
 	}
@@ -321,24 +252,18 @@ void UltimateAscent::Shoot() {
 		stopwatch.Start();
 		waitForLeaving = false;
 		triggerButton = true;
-		frisbeeCount --;
-		
-//		log << "Frisbees - 1\n";
 	}
 	
 	// Leaves shooter out for 0.25 seconds
 	if (stopwatch.Get() >= 0.25 || waitForLeaving == true) {
 		if (stopwatch.Get() >= 0.5 || waitForLeaving == true) {
-//			log << "set launchers to false\n";
 			SetLauncherFalse();
 		}
 		else {
-//			log << "launcherOut set to true\n";
 			SetLauncherIn();
 		}
 	}
 	else {
-//		log << "launcherIn set to true\n";
 		SetLauncherOut();
 	}
 	
@@ -354,66 +279,12 @@ void UltimateAscent::Shoot() {
 		priorTriggerButton = false;
 	}
 	
-//	static double desiredSpeed = 0;
-/*	 double currentSpeed = 0;
-	// write desiredSpeed to dashboard
-	SmartDashboard::PutNumber("Disired Flywheel Speed", desiredSpeed);
-	Timer StopwatchPID;
-	static bool onfPID = false;
-	static bool firstPID = false;
-	static bool lastPID = false;
-	
-	if (stick2.GetRawButton(FLYWHEEL_OFF_BUTTON)) {
-			StopwatchPID.Stop();
-			StopwatchPID.Reset();
-			firstPID = false;
-			onfPID = false;
-			lastPID = true;
-	}
-	else if (stick2.GetRawButton(FLYWHEEL_ON_BUTTON)) {
-		StopwatchPID.Stop();
-		StopwatchPID.Reset();
-		StopwatchPID.Start();
-		onfPID = true;
-		firstPID = true;
-	}
-	else if (onfPID == true) {
-		if (StopwatchPID.Get() <= 1) {
-			flywheelMotor.Set(1);
-		}
-		else {
-			StopwatchPID.Stop();
-			StopwatchPID.Reset();
-			onfPID = false;
-		}
-	}
-	else {
-		if (firstPID == true) {
-			flywheelSpeed.Enable();
-			flywheelSpeed.SetSetpoint(67);
-			firstPID = false;
-		}
-		if (lastPID == true) {
-			flywheelSpeed.SetSetpoint(0);
-			flywheelSpeed.Disable();
-			lastPID = false;
-		}
-	}
-*/	
 	// Turn flywheels on and off
 	if (stick2.GetRawButton(FLYWHEEL_ON_BUTTON)) {
-//		log << "flyWheel desiredSpeed set to startSpeed\n";
 		flywheelState = true;
-//		flywheelSpeed.Enable();
-//		desiredSpeed = 128;
-//		flywheelSpeed.SetSetpoint(desiredSpeed);
 	}
 	else if (stick2.GetRawButton(FLYWHEEL_OFF_BUTTON)) {
-//		log << "flyWheel desiredSpeed set to 0\n";
 		flywheelState = false;
-//		flywheelSpeed.Disable();
-//		desiredSpeed = 0;
-//		flywheelSpeed.SetSetpoint(desiredSpeed);
 	}
 	if (flywheelState){
 		flywheelMotor.Set((stick2.GetRawAxis(3) - 1) / -2);
