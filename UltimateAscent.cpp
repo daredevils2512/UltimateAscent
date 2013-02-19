@@ -56,6 +56,7 @@ void UltimateAscent::Autonomous(void)
 	{		
 		if (IsAutonomous ()) {
 			leftMotorEncoder.Start();
+			leftMotorEncoder.Reset();
 			// Raises shooter to allow upper to deploy
 			while (IsAutonomous() && ShooterAngle(potentiometer.GetAverageVoltage()) > 12.4){
 				shooterAngleMotor.Set(Relay::kForward);
@@ -80,13 +81,17 @@ void UltimateAscent::Autonomous(void)
 			flywheelSpeed.SetSetpoint(0);
 			flywheelSpeed.Disable();
 			// Turns 45 degrees to the right
-			while(leftMotorEncoder.GetRaw() >= -1246 && IsAutonomous()){
-				frontLeftMotor.Set(-1);
+			while(leftMotorEncoder.GetRaw() <= 640 && IsAutonomous()) {
+				frontLeftMotor.Set(-.5);
 			}
 			leftMotorEncoder.Reset();
-			// Drives foreward approx 10 feet
-			while(leftMotorEncoder.GetRaw() <= 1246 && IsAutonomous()){
-				myRobot.ArcadeDrive(1, 0);
+			while(leftMotorEncoder.GetRaw() <= 160 && IsAutonomous()) {
+				myRobot.ArcadeDrive(-.5, 0);
+			}
+			leftMotorEncoder.Reset();
+			// Drives backward at full power
+			while(leftMotorEncoder.GetRaw() <= 1760 && IsAutonomous()) {
+				myRobot.ArcadeDrive(-1, 0);
 			}
 		}
 	}
