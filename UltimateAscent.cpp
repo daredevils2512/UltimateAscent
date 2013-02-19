@@ -218,6 +218,7 @@ void UltimateAscent::Scoop(){
 
 void UltimateAscent::Shoot() {
 	static bool flywheelState = false;
+	// changes shooting angle
 	if (stick2.GetRawButton(ANGLE_UP_BUTTON) && ShooterAngle(potentiometer.GetAverageVoltage()) >= 10){
 		shooterAngleMotor.Set(Relay::kForward);
 	}
@@ -274,6 +275,7 @@ void UltimateAscent::Shoot() {
 	else if (stick2.GetRawButton(FLYWHEEL_OFF_BUTTON)) {
 		flywheelState = false;
 	}
+	// Set to speed of throttle on Joystick 2
 	if (flywheelState){
 		flywheelMotor.Set((stick2.GetRawAxis(3) - 1) / -2);
 	}

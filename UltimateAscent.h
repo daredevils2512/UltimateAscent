@@ -7,7 +7,6 @@ class UltimateAscent : public SimpleRobot
 {
 	//SideCar Constants
 	static const UINT8 DIGITAL_SIDECAR_1 = 1;
-	static const UINT8 DIGITAL_SIDECAR_2 = 2;
 	static const UINT8 ANALOG_SIDECAR_1 = 1;
 	static const UINT8 SOLENOID_SIDECAR_1 = 1;
 	
@@ -89,8 +88,8 @@ class UltimateAscent : public SimpleRobot
 	
 	//Joystick 2 Buttons
 	static const UINT32 FIRE_BUTTON = 1;
-	static const int FLYWHEEL_ON_BUTTON = 2;
-	static const int FLYWHEEL_OFF_BUTTON = 3;
+	static const int FLYWHEEL_ON_BUTTON = 3;
+	static const int FLYWHEEL_OFF_BUTTON = 2;
 	static const int ANGLE_UP_BUTTON = 11;
 	static const int ANGLE_DOWN_BUTTON = 10;
 	
