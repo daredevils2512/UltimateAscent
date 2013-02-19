@@ -5,6 +5,7 @@
 
 UltimateAscent::UltimateAscent(void):
 		// these must be initialized in the same order as they are declared in the header file.
+		frisbeeCount(0),
 		timer(),
 		flywheelTimer(),
 		frontLeftMotor(FRONT_LEFT_MOTOR_SIDECAR, FRONT_LEFT_MOTOR_PWM),
@@ -26,6 +27,9 @@ UltimateAscent::UltimateAscent(void):
 		launcherOut(LAUNCHER_OUT_SIDECAR, LAUNCHER_OUT_PWM),
 		flywheelLightSensor(FLWYHEEL_LIGHT_SENSOR_SIDECAR, FLYWHEEL_LIGHT_SENSOR_PWM),
 		frisbeeLightSensor(FRISBEE_LIGHT_SENSOR_SIDECAR, FRISBEE_LIGHT_SENSOR_PWM),
+		elevatorLightSensor(FRISBEE_LIGHT_SENSOR_SIDECAR, ELEVATOR_LIGHT_SENSOR),
+		hopperLightSensor(FRISBEE_LIGHT_SENSOR_SIDECAR, HOPPER_LIGHT_SENSOR),
+		exitLightSensor(FRISBEE_LIGHT_SENSOR_SIDECAR, EXIT_LIGHT_SENSOR),
 		flywheelEncoder(flywheelLightSensor),
 		leftMotorEncoder(LEFT_MOTOR_ENCODER_PWM_A, LEFT_MOTOR_ENCODER_PWM_B),
 		rightMotorEncoder(RIGHT_MOTOR_ENCODER_PWM_A, RIGHT_MOTOR_ENCODER_PWM_B),
@@ -113,6 +117,7 @@ void UltimateAscent::OperatorControl(void)
 				SmartDashboard::PutNumber("Potentiometer",ShooterAngle(potentiometer.GetAverageVoltage()));
 				SmartDashboard::PutNumber("Fly Wheel RPS", flywheelEncoder.GetRate());
 				SmartDashboard::PutNumber("Drive Encoder", leftMotorEncoder.GetRaw());
+				SmartDashboard::PutNumber("Frisbee Count", frisbeeCount);
 				timer.Reset();
 			}
 			Wait(0.005);
@@ -218,6 +223,7 @@ void UltimateAscent::Scoop(){
 
 void UltimateAscent::Shoot() {
 	static bool flywheelState = false;
+	
 	if (stick2.GetRawButton(ANGLE_UP_BUTTON) && ShooterAngle(potentiometer.GetAverageVoltage()) >= 10){
 		shooterAngleMotor.Set(Relay::kForward);
 	}
@@ -310,6 +316,28 @@ float UltimateAscent::ShooterAngle(float pot)
 {
 	// Change the potentiometer reading to an angle measurement
 	return (pot * 7.2156) - 5.525;
+}
+
+void UltimateAscent::FrisbeeCounter() {
+	static bool previousLightSensorElevator = false;
+	static bool previousLightSensorHopper = false;
+	static bool previousLightSensorExit = false;
+	bool currentLightSensorElevator = elevatorLightSensor.Get();
+	bool currentLightSensorHopper = hopperLightSensor.Get();
+	bool currentLightSensorExit = exitLightSensor.Get();
+	
+	if (currentLightSensorHopper == true && previousLightSensorHopper == false) {
+		frisbeeCount++;
+	}
+	if (currentLightSensorElevator == true && previousLightSensorElevator == false) {
+		frisbeeCount++;
+	}
+	if (currentLightSensorExit == true && previousLightSensorExit == false) {
+		frisbeeCount--;
+	}
+	previousLightSensorHopper = currentLightSensorHopper;
+	previousLightSensorElevator = currentLightSensorElevator;
+	previousLightSensorExit = currentLightSensorExit;
 }
 
 START_ROBOT_CLASS(UltimateAscent);

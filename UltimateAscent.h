@@ -80,6 +80,13 @@ class UltimateAscent : public SimpleRobot
 	static const UINT32 COMPRESSOR_RELAY_PWM = 1;
 	static const UINT8 COMPRESSOR_SWITCH_SIDECAR = DIGITAL_SIDECAR_1;
 	static const UINT32 COMPRESSOR_SWITCH_PWM = 6;
+	//Frisbee Light Sensors
+	static const UINT8 FRISBEE_LIGHT_SENSORS_SIDECAR = DIGITAL_SIDECAR_1;
+	//Elevator Light Sensor
+	static const UINT32 ELEVATOR_LIGHT_SENSOR = 7;
+	static const UINT32 HOPPER_LIGHT_SENSOR = 8;
+	static const UINT32 EXIT_LIGHT_SENSOR = 9;
+
 	
 	//Joystick 1 Buttons
 	static const int GRIPPIES_DOWN_BUTTON = 2;
@@ -95,6 +102,8 @@ class UltimateAscent : public SimpleRobot
 	static const int ANGLE_DOWN_BUTTON = 10;
 	
 	//VARIABLES
+	int frisbeeCount;
+
 	Timer timer;
 	Timer flywheelTimer;
 	Talon frontLeftMotor;
@@ -116,6 +125,9 @@ class UltimateAscent : public SimpleRobot
 	Solenoid launcherOut;
 	DigitalInput flywheelLightSensor;
 	DigitalInput frisbeeLightSensor;
+	DigitalInput elevatorLightSensor;
+	DigitalInput hopperLightSensor;
+	DigitalInput exitLightSensor;
 	FlywheelEncoder flywheelEncoder;
 	Encoder leftMotorEncoder;
 	Encoder rightMotorEncoder;
@@ -145,6 +157,8 @@ class UltimateAscent : public SimpleRobot
 	void AutonomousShoot();
 	
 	float ShooterAngle(float pot);
+	
+	void FrisbeeCounter();
 public:
 	UltimateAscent(void);
 
