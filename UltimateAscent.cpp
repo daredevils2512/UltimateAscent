@@ -46,6 +46,8 @@ UltimateAscent::UltimateAscent(void):
 		flywheelSpeed.SetInputRange(0, 128);
 		flywheelSpeed.SetOutputRange(0, 64);
 		compressor.Enabled();
+		leftMotorEncoder.SetDistancePerPulse(1);
+		rightMotorEncoder.SetDistancePerPulse(1);
 		SmartDashboard::init();
 	}
 
@@ -53,6 +55,7 @@ UltimateAscent::UltimateAscent(void):
 void UltimateAscent::Autonomous(void)
 	{		
 		if (IsAutonomous ()) {
+			leftMotorEncoder.Start();
 			while (IsAutonomous() && ShooterAngle(potentiometer.GetAverageVoltage()) > 12.4){
 				shooterAngleMotor.Set(Relay::kForward);
 				SmartDashboard::PutNumber("Potentiometer",ShooterAngle(potentiometer.GetAverageVoltage()));
@@ -73,12 +76,20 @@ void UltimateAscent::Autonomous(void)
 			// Sets the flywheel speed to zero before teleop
 			flywheelSpeed.SetSetpoint(0);
 			flywheelSpeed.Disable();
+			while(leftMotorEncoder.GetRaw() >= -1246 && IsAutonomous()){
+				frontLeftMotor.Set(-1);
+			}
+			leftMotorEncoder.Reset();
+			while(leftMotorEncoder.GetRaw() <= 1246 && IsAutonomous()){
+				myRobot.ArcadeDrive(1, 0);
+			}
 		}
 	}
 
 
 void UltimateAscent::OperatorControl(void)
 	{
+		leftMotorEncoder.Start();
 		timer.Start();
 		flywheelTimer.Start();
 		while (IsOperatorControl())
@@ -101,6 +112,7 @@ void UltimateAscent::OperatorControl(void)
 			if(timer.Get() >= 1){
 				SmartDashboard::PutNumber("Potentiometer",ShooterAngle(potentiometer.GetAverageVoltage()));
 				SmartDashboard::PutNumber("Fly Wheel RPS", flywheelEncoder.GetRate());
+				SmartDashboard::PutNumber("Drive Encoder", leftMotorEncoder.GetRaw());
 				timer.Reset();
 			}
 			Wait(0.005);
