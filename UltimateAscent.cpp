@@ -56,10 +56,12 @@ void UltimateAscent::Autonomous(void)
 	{		
 		if (IsAutonomous ()) {
 			leftMotorEncoder.Start();
+			// Raises shooter to allow upper to deploy
 			while (IsAutonomous() && ShooterAngle(potentiometer.GetAverageVoltage()) > 12.4){
 				shooterAngleMotor.Set(Relay::kForward);
 				SmartDashboard::PutNumber("Potentiometer",ShooterAngle(potentiometer.GetAverageVoltage()));
 			}
+			// Lowers shooter to the Autonomous shooting angle
 			while (IsAutonomous() && ShooterAngle(potentiometer.GetAverageVoltage()) < 19){
 				shooterAngleMotor.Set(Relay::kReverse);
 				flywheelSpeed.SetSetpoint(128);
@@ -67,6 +69,7 @@ void UltimateAscent::Autonomous(void)
 			}
 			shooterAngleMotor.Set(Relay::kOff);
 			
+			// Shoots 3 frisbees, actuats the solenoids 4 times in case of a jam
 			for (int i = 0; i < 4; i++) {
 				AutonomousShoot();
 				if (i != 3) {
@@ -76,10 +79,12 @@ void UltimateAscent::Autonomous(void)
 			// Sets the flywheel speed to zero before teleop
 			flywheelSpeed.SetSetpoint(0);
 			flywheelSpeed.Disable();
+			// Turns 45 degrees to the right
 			while(leftMotorEncoder.GetRaw() >= -1246 && IsAutonomous()){
 				frontLeftMotor.Set(-1);
 			}
 			leftMotorEncoder.Reset();
+			// Drives foreward approx 10 feet
 			while(leftMotorEncoder.GetRaw() <= 1246 && IsAutonomous()){
 				myRobot.ArcadeDrive(1, 0);
 			}
@@ -179,6 +184,7 @@ void UltimateAscent::Scoop(){
 	else if(stick1.GetRawButton(4)){
 		scoopState = true;
 	}
+	// Toggle for scoop deploy
 	if(currentScoopButton == true && previousScoopButton == false){
 		if(scoopSolenoid1.Get() == false){
 			scoopState = false;
@@ -284,6 +290,7 @@ void UltimateAscent::Shoot() {
 	}
 }
 
+// Functions for the shooter solenoids
 void UltimateAscent::SetLauncherOut()
 {
 	launcherOut.Set(true);
@@ -301,6 +308,8 @@ void UltimateAscent::SetLauncherFalse()
 	launcherIn.Set(false);
 	launcherOut.Set(false);
 }
+
+// Shoots a frisbee leaving the solenoids out for a short period
 void UltimateAscent::AutonomousShoot ()
 {
 	SetLauncherOut();
@@ -308,6 +317,7 @@ void UltimateAscent::AutonomousShoot ()
 	Wait(0.25);
 	SetLauncherIn();
 }
+
 float UltimateAscent::ShooterAngle(float pot)
 {
 	// Change the potentiometer reading to an angle measurement
