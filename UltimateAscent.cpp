@@ -57,6 +57,8 @@ void UltimateAscent::Autonomous(void)
 		if (IsAutonomous ()) {
 			leftMotorEncoder.Start();
 			leftMotorEncoder.Reset();
+			rightMotorEncoder.Start();
+			rightMotorEncoder.Reset();
 			// Raises shooter to allow upper to deploy
 			while (IsAutonomous() && ShooterAngle(potentiometer.GetAverageVoltage()) > 12.4){
 				shooterAngleMotor.Set(Relay::kForward);
@@ -80,18 +82,16 @@ void UltimateAscent::Autonomous(void)
 			// Sets the flywheel speed to zero before teleop
 			flywheelSpeed.SetSetpoint(0);
 			flywheelSpeed.Disable();
-			// Turns 45 degrees to the right
-			while(leftMotorEncoder.GetRaw() <= 640 && IsAutonomous()) {
-				frontLeftMotor.Set(-.5);
-			}
+			// Reset drive encoders
+			rightMotorEncoder.Reset();
 			leftMotorEncoder.Reset();
-			while(leftMotorEncoder.GetRaw() <= 160 && IsAutonomous()) {
-				myRobot.ArcadeDrive(-.5, 0);
+			// Turn away from pyramid
+			while(rightMotorEncoder.GetRaw() >= -220 && IsAutonomous()) {
+				myRobot.TankDrive(0, .5, false);
 			}
-			leftMotorEncoder.Reset();
-			// Drives backward at full power
-			while(leftMotorEncoder.GetRaw() <= 1760 && IsAutonomous()) {
-				myRobot.ArcadeDrive(-1, 0);
+			// Drive straight away
+			while(leftMotorEncoder.GetRaw() >= -960 && IsAutonomous()) {
+				myRobot.TankDrive(.5, .5, false);
 			}
 		}
 	}
@@ -183,10 +183,10 @@ void UltimateAscent::Scoop(){
 	
 	
 	//Toggle the state of the Scoop. Deployed or Undeployed
-	if (stick1.GetRawButton(6)){
+	if (stick1.GetRawButton(HOTWHEELS_OFF_BUTTON)){
 		scoopState = false;
 	}
-	else if(stick1.GetRawButton(4)){
+	else if(stick1.GetRawButton(HOTWHEELS_ON_BUTTON)){
 		scoopState = true;
 	}
 	// Toggle for scoop deploy
