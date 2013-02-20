@@ -55,17 +55,25 @@ UltimateAscent::UltimateAscent(void):
 void UltimateAscent::Autonomous(void)
 	{		
 		if (IsAutonomous ()) {
+			double autonAngle;
 			leftMotorEncoder.Start();
 			leftMotorEncoder.Reset();
 			rightMotorEncoder.Start();
 			rightMotorEncoder.Reset();
+			// Determines autonAngle based on joystick 2's throttle
+			if(stick2.GetRawAxis(3) > 0) {
+				autonAngle = 19;
+			}
+			else {
+				autonAngle = 20.3;
+			}
 			// Raises shooter to allow upper to deploy
 			while (IsAutonomous() && ShooterAngle(potentiometer.GetAverageVoltage()) > 12.4){
 				shooterAngleMotor.Set(Relay::kForward);
 				SmartDashboard::PutNumber("Potentiometer",ShooterAngle(potentiometer.GetAverageVoltage()));
 			}
 			// Lowers shooter to the Autonomous shooting angle
-			while (IsAutonomous() && ShooterAngle(potentiometer.GetAverageVoltage()) < 19){
+			while (IsAutonomous() && ShooterAngle(potentiometer.GetAverageVoltage()) < autonAngle){
 				shooterAngleMotor.Set(Relay::kReverse);
 				flywheelSpeed.SetSetpoint(128);
 				SmartDashboard::PutNumber("Potentiometer",ShooterAngle(potentiometer.GetAverageVoltage()));
@@ -233,7 +241,7 @@ void UltimateAscent::Shoot() {
 	if (stick2.GetRawButton(ANGLE_UP_BUTTON) && ShooterAngle(potentiometer.GetAverageVoltage()) >= 10){
 		shooterAngleMotor.Set(Relay::kForward);
 	}
-	else if (stick2.GetRawButton(ANGLE_DOWN_BUTTON)  && ShooterAngle(potentiometer.GetAverageVoltage()) <= 20){
+	else if (stick2.GetRawButton(ANGLE_DOWN_BUTTON)  && ShooterAngle(potentiometer.GetAverageVoltage()) <= 20.39){
 		shooterAngleMotor.Set(Relay::kReverse);
 	}
 	else{
