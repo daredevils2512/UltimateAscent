@@ -82,18 +82,20 @@ class UltimateAscent : public SimpleRobot
 	static const UINT32 COMPRESSOR_SWITCH_PWM = 6;
 	
 	//Joystick 1 Buttons
-	static const int GRIPPIES_DOWN_BUTTON = 2;
-	static const int BRUSH_BUTTON = 7;
-	static const int BRUSH_REVERSE_BUTTON = 9;
-	static const int SCOOP_TOGGLE_BUTTON = 8;
+	static const UINT32 GRIPPIES_DOWN_BUTTON = 2;
+	static const UINT32 BRUSH_BUTTON = 7;
+	static const UINT32 BRUSH_REVERSE_BUTTON = 9;
+	static const UINT32 SCOOP_TOGGLE_BUTTON = 8;
 	
 	//Joystick 2 Buttons
 	static const UINT32 FIRE_BUTTON = 1;
-	static const int FLYWHEEL_ON_BUTTON = 2;
-	static const int FLYWHEEL_OFF_BUTTON = 3;
-	static const int ANGLE_UP_BUTTON = 11;
-	static const int ANGLE_DOWN_BUTTON = 10;
+	static const UINT32 FLYWHEEL_ON_BUTTON = 2;
+	static const UINT32 FLYWHEEL_OFF_BUTTON = 3;
+	static const UINT32 ANGLE_UP_BUTTON = 11;
+	static const UINT32 ANGLE_DOWN_BUTTON = 10;
 	
+	// Time that the launcher stays out
+	static const double LAUNCHER_WAIT_TIME;
 	//VARIABLES
 	Timer timer;
 	Timer flywheelTimer;
@@ -136,8 +138,10 @@ class UltimateAscent : public SimpleRobot
 	
 	void Scoop();
 	
+	// Fires Frisbee
 	void SetLauncherOut();
 	
+	// Brings Launcher back
 	void SetLauncherIn();
 	
 	void SetLauncherFalse();
