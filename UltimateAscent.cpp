@@ -68,7 +68,7 @@ void UltimateAscent::Autonomous(void)
 		log << "Begining Autonomous" << al::endl;
 		
 		if (IsAutonomous ()) {
-			while (IsAutonomous() && ShooterAngle(potentiometer.GetAverageVoltage()) > 11.7){
+			while (IsAutonomous() && ShooterAngle(potentiometer.GetAverageVoltage()) > 12.4){
 				shooterAngleMotor.Set(Relay::kForward);
 				SmartDashboard::PutNumber("Potentiometer",ShooterAngle(potentiometer.GetAverageVoltage()));
 			}
@@ -88,7 +88,7 @@ void UltimateAscent::Autonomous(void)
 				Wait(LAUNCHER_WAIT_TIME);
 				SetLauncherIn();
 				// Waits for the flywheel to get up to speed between shots
-				Wait(2.5);
+				Wait(1.25);
 				
 				// Shoots second ball
 				SetLauncherOut();
@@ -97,7 +97,7 @@ void UltimateAscent::Autonomous(void)
 				SetLauncherIn();
 				
 				// Waits for the flywheel to get up to speed between shots
-				Wait(2.5);
+				Wait(1.25);
 				
 				// Shoots third ball
 				SetLauncherOut();
