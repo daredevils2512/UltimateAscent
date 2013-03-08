@@ -87,6 +87,7 @@ class UltimateAscent : public SimpleRobot
 	static const int SCOOP_TOGGLE_BUTTON = 8;
 	static const int HOTWHEELS_ON_BUTTON = 4;
 	static const int HOTWHEELS_OFF_BUTTON = 6;
+	static const int STOW_BUTTON_1 = 10;
 	
 	//Joystick 2 Buttons
 	static const UINT32 FIRE_BUTTON = 1;
@@ -94,6 +95,7 @@ class UltimateAscent : public SimpleRobot
 	static const int FLYWHEEL_OFF_BUTTON = 2;
 	static const int ANGLE_UP_BUTTON = 11;
 	static const int ANGLE_DOWN_BUTTON = 10;
+	static const int STOW_BUTTON_2 = 7;
 	
 	//VARIABLES
 	Timer timer;
