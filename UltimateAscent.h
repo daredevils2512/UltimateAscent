@@ -88,6 +88,7 @@ class UltimateAscent : public SimpleRobot
 	static const int HOTWHEELS_ON_BUTTON = 4;
 	static const int HOTWHEELS_OFF_BUTTON = 6;
 	static const int STOW_BUTTON_1 = 10;
+	static const int INVERT_BUTTON = 11;
 	
 	//Joystick 2 Buttons
 	static const UINT32 FIRE_BUTTON = 1;
@@ -96,6 +97,8 @@ class UltimateAscent : public SimpleRobot
 	static const int ANGLE_UP_BUTTON = 11;
 	static const int ANGLE_DOWN_BUTTON = 10;
 	static const int STOW_BUTTON_2 = 7;
+	// button 6 allows you to adjust the flywheel speed instead of going 100%
+	static const int ADJ_BUTTON = 6;
 	
 	//VARIABLES
 	Timer gameTimer;

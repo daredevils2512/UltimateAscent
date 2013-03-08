@@ -57,6 +57,7 @@ void UltimateAscent::Autonomous(void)
 	{		
 		if (IsAutonomous ()) {
 			// autonAngle is the angle from which we shoot
+			bool angleStop = false;
 			double autonAngle;
 			leftMotorEncoder.Start();
 			leftMotorEncoder.Reset();
@@ -76,6 +77,12 @@ void UltimateAscent::Autonomous(void)
 			}
 			// Lowers shooter to the Autonomous shooting angle
 			while (IsAutonomous() && ShooterAngle(potentiometer.GetAverageVoltage()) < autonAngle){
+				if(angleStop == false && ShooterAngle(potentiometer.GetAverageVoltage()) > autonAngle - 1) {
+					shooterAngleMotor.Set(Relay::kOff);
+					AutonomousShoot();
+					angleStop = true;
+					Wait(.1);
+				}
 				shooterAngleMotor.Set(Relay::kReverse);
 				flywheelSpeed.SetSetpoint(128);
 				SmartDashboard::PutNumber("Potentiometer",ShooterAngle(potentiometer.GetAverageVoltage()));
@@ -83,12 +90,12 @@ void UltimateAscent::Autonomous(void)
 			shooterAngleMotor.Set(Relay::kOff);
 			
 			// Shoots 3 frisbees, actuates the solenoids 4 times in case of a jam
-			for (int i = 0; i < 4; i++) {
+			for (int i = 0; i < 3; i++) {
 				/*if(i=0) {
 					Wait(1);
 				}*/
 				AutonomousShoot();
-				if (i != 3) {
+				if (i != 2) {
 					Wait(1.25);
 				}
 			}
@@ -170,9 +177,17 @@ float UltimateAscent::ConvertAxis(float input){
 void UltimateAscent::Drive(){
 	
 	// Joystick Axis Inputs
-	float xOutput = ConvertAxis(stick1.GetX());
-	float yOutput = ConvertAxis(stick1.GetY());
+	float xOutput;
+	float yOutput;
 	float twistOutput = ConvertAxis(stick1.GetTwist()) / (1.5);
+	if(stick1.GetRawButton(INVERT_BUTTON)) {
+		xOutput = -1 * ConvertAxis(stick1.GetX());
+		yOutput = -1 * ConvertAxis(stick1.GetY());
+	}
+	else {
+		xOutput = ConvertAxis(stick1.GetX());
+		yOutput = ConvertAxis(stick1.GetY());
+	}
 	
 	
 	//Grippy Deployment
@@ -248,7 +263,7 @@ void UltimateAscent::Scoop(){
 }
 
 void UltimateAscent::Shoot() {
-	static bool flywheelState = false;
+	static bool flywheelState = true;
 	// changes shooting angle
 	if (stick2.GetRawButton(ANGLE_UP_BUTTON) && ShooterAngle(potentiometer.GetAverageVoltage()) >= 10){
 		shooterAngleMotor.Set(Relay::kForward);
@@ -311,7 +326,13 @@ void UltimateAscent::Shoot() {
 	}
 	// Set to speed of throttle on Joystick 2
 	if (flywheelState){
-		flywheelMotor.Set((stick2.GetRawAxis(3) - 1) / -2);
+		if (stick2.GetRawButton(ADJ_BUTTON)) {
+			flywheelMotor.Set((stick2.GetRawAxis(3) - 1) / -2);
+		}
+		else {
+			flywheelMotor.Set(1);
+		}
+		
 	}
 	else {
 		flywheelMotor.Set(0);
