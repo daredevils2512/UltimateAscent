@@ -5,6 +5,7 @@
 
 UltimateAscent::UltimateAscent(void):
 		// these must be initialized in the same order as they are declared in the header file.
+		gameTimer(),
 		timer(),
 		flywheelTimer(),
 		frontLeftMotor(FRONT_LEFT_MOTOR_SIDECAR, FRONT_LEFT_MOTOR_PWM),
@@ -81,8 +82,11 @@ void UltimateAscent::Autonomous(void)
 			}
 			shooterAngleMotor.Set(Relay::kOff);
 			
-			// Shoots 3 frisbees, actuats the solenoids 4 times in case of a jam
+			// Shoots 3 frisbees, actuates the solenoids 4 times in case of a jam
 			for (int i = 0; i < 4; i++) {
+				/*if(i=0) {
+					Wait(1);
+				}*/
 				AutonomousShoot();
 				if (i != 3) {
 					Wait(1.25);
@@ -109,6 +113,7 @@ void UltimateAscent::Autonomous(void)
 void UltimateAscent::OperatorControl(void)
 	{
 		leftMotorEncoder.Start();
+		gameTimer.Start();
 		timer.Start();
 		flywheelTimer.Start();
 		while (IsOperatorControl())
@@ -127,6 +132,12 @@ void UltimateAscent::OperatorControl(void)
 			if(flywheelTimer.Get() >= 0.5){
 				flywheelEncoder.PeriodCounter();
 				flywheelTimer.Reset();
+			}
+			if(gameTimer.Get() >= 119.9){
+				solenoid1.Set(true);
+				solenoid2.Set(false);
+				solenoid3.Set(true);
+				solenoid4.Set(false);
 			}
 			if(timer.Get() >= 1){
 				SmartDashboard::PutNumber("Potentiometer",ShooterAngle(potentiometer.GetAverageVoltage()));

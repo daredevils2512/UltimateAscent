@@ -98,6 +98,7 @@ class UltimateAscent : public SimpleRobot
 	static const int STOW_BUTTON_2 = 7;
 	
 	//VARIABLES
+	Timer gameTimer;
 	Timer timer;
 	Timer flywheelTimer;
 	Talon frontLeftMotor;
