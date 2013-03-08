@@ -84,7 +84,7 @@ void UltimateAscent::Autonomous(void)
 					Wait(.1);
 				}
 				shooterAngleMotor.Set(Relay::kReverse);
-				flywheelSpeed.SetSetpoint(128);
+				flywheelSpeed.SetSetpoint(110);
 				SmartDashboard::PutNumber("Potentiometer",ShooterAngle(potentiometer.GetAverageVoltage()));
 			}
 			shooterAngleMotor.Set(Relay::kOff);
@@ -96,7 +96,7 @@ void UltimateAscent::Autonomous(void)
 				}*/
 				AutonomousShoot();
 				if (i != 2) {
-					Wait(1.25);
+					Wait(1.6);
 				}
 			}
 			// Sets the flywheel speed to zero before teleop
