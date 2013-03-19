@@ -57,6 +57,7 @@ void UltimateAscent::Autonomous(void)
 	{		
 		if (IsAutonomous ()) {
 			// autonAngle is the angle from which we shoot
+			// angleStop is for when we shoot the first frisbee
 			bool angleStop = false;
 			double autonAngle;
 			leftMotorEncoder.Start();
@@ -84,7 +85,7 @@ void UltimateAscent::Autonomous(void)
 					Wait(.1);
 				}
 				shooterAngleMotor.Set(Relay::kReverse);
-				flywheelSpeed.SetSetpoint(110);
+				flywheelSpeed.SetSetpoint(108);
 				SmartDashboard::PutNumber("Potentiometer",ShooterAngle(potentiometer.GetAverageVoltage()));
 			}
 			shooterAngleMotor.Set(Relay::kOff);
@@ -96,7 +97,7 @@ void UltimateAscent::Autonomous(void)
 				}*/
 				AutonomousShoot();
 				if (i != 2) {
-					Wait(1.6);
+					Wait(1.5);
 				}
 			}
 			// Sets the flywheel speed to zero before teleop
@@ -178,17 +179,14 @@ void UltimateAscent::Drive(){
 	
 	// Joystick Axis Inputs
 	float xOutput;
-	float yOutput;
+	float yOutput = ConvertAxis(stick1.GetY());
 	float twistOutput = ConvertAxis(stick1.GetTwist()) / (1.5);
-	if(stick1.GetRawButton(INVERT_BUTTON)) {
-		xOutput = -1 * ConvertAxis(stick1.GetX());
-		yOutput = -1 * ConvertAxis(stick1.GetY());
+	if(stick1.GetRawAxis(4) < 0) {
+		xOutput = ConvertAxis(stick1.GetX()) / 2;
 	}
 	else {
 		xOutput = ConvertAxis(stick1.GetX());
-		yOutput = ConvertAxis(stick1.GetY());
 	}
-	
 	
 	//Grippy Deployment
 	if (stick1.GetRawButton(GRIPPIES_DOWN_BUTTON)){
