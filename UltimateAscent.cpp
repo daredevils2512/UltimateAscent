@@ -2,7 +2,8 @@
 #include <cmath>
 #include "UltimateAscent.h"
 
-
+const double UltimateAscent::PYRAMID_ANGLE = 16.5;
+const double UltimateAscent::FEEDER_ANGLE = 12;
 const double UltimateAscent::LAUNCHER_WAIT_TIME = 0.25;
 
 UltimateAscent::UltimateAscent(void):
@@ -264,19 +265,49 @@ void UltimateAscent::Scoop(){
 
 void UltimateAscent::Shoot() {
 	static bool flywheelState = true;
+	static bool stowOn = false;
+	static bool goToAngleReached = true;
+	static float desiredAngle = 0;
 	// changes shooting angle
 	if (stick2.GetRawButton(ANGLE_UP_BUTTON) && ShooterAngle(potentiometer.GetAverageVoltage()) >= 10){
 		shooterAngleMotor.Set(Relay::kForward);
+		goToAngleReached = true;
 	}
 	else if (stick2.GetRawButton(ANGLE_DOWN_BUTTON)  && ShooterAngle(potentiometer.GetAverageVoltage()) <= 22.47){
 		shooterAngleMotor.Set(Relay::kReverse);
+		goToAngleReached = true;
 	}
-	else if ((stick1.GetRawButton(STOW_BUTTON_1) || stick2.GetRawButton(STOW_BUTTON_2)) && ShooterAngle(potentiometer.GetAverageVoltage()) <= 22.47) {
-		shooterAngleMotor.Set(Relay::kReverse);
-	}
+//	else if ((stick1.GetRawButton(STOW_BUTTON_1) || stick2.GetRawButton(STOW_BUTTON_2)) && ShooterAngle(potentiometer.GetAverageVoltage()) <= 22.47) {
+//		shooterAngleMotor.Set(Relay::kReverse);
+//	}
 	else{
 		shooterAngleMotor.Set(Relay::kOff);
 	}
+	if(stick1.GetRawButton(STOW_BUTTON_1) || stick2.GetRawButton(STOW_BUTTON_2)){
+		stowOn = true;
+	}
+	if(stick2.GetRawButton(PYRAMID_ANGLE_BUTTON)){
+		goToAngleReached = false;
+		desiredAngle = PYRAMID_ANGLE;
+	}
+	if(stick2.GetRawButton(FEEDER_ANGLE_BUTTON)){
+		goToAngleReached = false;
+		desiredAngle = FEEDER_ANGLE;
+	}
+	if (goToAngleReached == false){
+		goToAngleReached = GoToAngle(desiredAngle);
+	}
+	if(stowOn){
+		goToAngleReached = true;
+		if(ShooterAngle(potentiometer.GetAverageVoltage()) <= 22.47){
+			shooterAngleMotor.Set(Relay::kReverse);
+		}
+		else{
+			stowOn = false;
+			shooterAngleMotor.Set(Relay::kOff);
+		}
+	}
+	
 	// waitForLeaving is used as a buffer between shots
 	static bool waitForLeaving = true;
 	// Both are used for rising edge detector
@@ -372,6 +403,29 @@ float UltimateAscent::ShooterAngle(float pot)
 {
 	// Change the potentiometer reading to an angle measurement
 	return (pot * 7.2156) - 5.525;
+}
+
+bool UltimateAscent::GoToAngle(double desiredAngle) {
+	static bool belowDesiredAngle = false;
+	static bool reachedDesiredAngle = false;
+	if (ShooterAngle(potentiometer.GetAverageVoltage()) > desiredAngle + 0.5){
+		belowDesiredAngle = false;
+	}
+	else if (ShooterAngle(potentiometer.GetAverageVoltage()) < desiredAngle - 0.5) {
+		belowDesiredAngle = true;
+	}
+	if(belowDesiredAngle){
+		shooterAngleMotor.Set(Relay::kReverse);
+	}
+	else if(belowDesiredAngle = false){
+		shooterAngleMotor.Set(Relay::kForward);
+	}
+	if (ShooterAngle(potentiometer.GetAverageVoltage()) < desiredAngle + 0.5 
+			&& ShooterAngle(potentiometer.GetAverageVoltage()) < desiredAngle - 0.5) {
+		shooterAngleMotor.Set(Relay::kOff);
+		reachedDesiredAngle = true;
+	}
+	return reachedDesiredAngle;
 }
 
 START_ROBOT_CLASS(UltimateAscent);

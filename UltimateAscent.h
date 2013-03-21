@@ -99,7 +99,12 @@ class UltimateAscent : public SimpleRobot
 	static const int STOW_BUTTON_2 = 7;
 	// button 6 allows you to adjust the flywheel speed instead of going 100%
 	static const int ADJ_BUTTON = 6;
+	static const UINT32 PYRAMID_ANGLE_BUTTON = 4;
+	static const UINT32 FEEDER_ANGLE_BUTTON = 5;
 	
+	
+	static const double PYRAMID_ANGLE;
+	static const double FEEDER_ANGLE;
 	// Time that the launcher stays out
 	static const double LAUNCHER_WAIT_TIME;
 	//VARIABLES
@@ -156,6 +161,8 @@ class UltimateAscent : public SimpleRobot
 	void AutonomousShoot();
 	
 	float ShooterAngle(float pot);
+	
+	bool GoToAngle(double desiredAngle);
 public:
 	UltimateAscent(void);
 
