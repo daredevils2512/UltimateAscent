@@ -35,7 +35,7 @@ UltimateAscent::UltimateAscent(void):
 		rightMotorEncoder(RIGHT_MOTOR_ENCODER_PWM_A, RIGHT_MOTOR_ENCODER_PWM_B),
 		stopwatch(),
 		pidOutput(flywheelMotor),
-		flywheelSpeed(1, 0, 0, &flywheelEncoder, &pidOutput), // TODO:Tune PID
+		flywheelSpeed(1, 0, 0, &flywheelEncoder, &pidOutput, 0.125), // TODO:Tune PID
 		myRobot(&frontLeftMotor, &rearLeftMotor, &frontRightMotor, &rearRightMotor),
 		stick1(1),
 		stick2(2),
@@ -140,7 +140,7 @@ void UltimateAscent::OperatorControl(void)
 				compressor.Stop();
 			}
 			flywheelEncoder.FlywheelCounter();
-			if(flywheelTimer.Get() >= 0.5){
+			if(flywheelTimer.Get() >= 0.125){
 				flywheelEncoder.PeriodCounter();
 				flywheelTimer.Reset();
 			}
