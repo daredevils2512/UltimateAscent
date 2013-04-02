@@ -105,6 +105,8 @@ class UltimateAscent : public SimpleRobot
 	
 	static const double PYRAMID_ANGLE;
 	static const double FEEDER_ANGLE;
+	static const float PYRAMID_SPEED;
+	static const float FEEDER_SPEED;
 	// Time that the launcher stays out
 	static const double LAUNCHER_WAIT_TIME;
 	//VARIABLES
@@ -140,6 +142,7 @@ class UltimateAscent : public SimpleRobot
 	Joystick stick1;
 	Joystick stick2;
 	AnalogChannel potentiometer;
+	Counter counter;
 	
 	
 	float ConvertAxis(float input);

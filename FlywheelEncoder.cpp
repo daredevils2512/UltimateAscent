@@ -33,3 +33,6 @@ double FlywheelEncoder::PIDGet(){
 	// Change periods(0.5s) to rpm(1 min)
 	return rotationsPerPeriod;
 }
+void FlywheelEncoder::SetRotations(int a){
+	rotationsPerPeriod = a;
+}

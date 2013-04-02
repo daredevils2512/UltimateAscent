@@ -34,4 +34,6 @@ public:
 	
 	//Inherited function for PID source recognition
 	virtual double PIDGet();
+	
+	void SetRotations(int a);
 };

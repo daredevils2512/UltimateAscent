@@ -4,6 +4,8 @@
 
 const double UltimateAscent::PYRAMID_ANGLE = 16.5;
 const double UltimateAscent::FEEDER_ANGLE = 12;
+const float UltimateAscent::PYRAMID_SPEED = 53.858;
+const float UltimateAscent::FEEDER_SPEED = 84.375;
 const double UltimateAscent::LAUNCHER_WAIT_TIME = 0.25;
 
 UltimateAscent::UltimateAscent(void):
@@ -35,11 +37,12 @@ UltimateAscent::UltimateAscent(void):
 		rightMotorEncoder(RIGHT_MOTOR_ENCODER_PWM_A, RIGHT_MOTOR_ENCODER_PWM_B),
 		stopwatch(),
 		pidOutput(flywheelMotor),
-		flywheelSpeed(1, 0, 0, &flywheelEncoder, &pidOutput, 0.125), // TODO:Tune PID
+		flywheelSpeed(0.750625, 0.03852941, 0, &flywheelEncoder, &pidOutput, 0.125),
 		myRobot(&frontLeftMotor, &rearLeftMotor, &frontRightMotor, &rearRightMotor),
 		stick1(1),
 		stick2(2),
-		potentiometer(POTENTIOMETER_SIDECAR, POTENTIOMETER_PWM)
+		potentiometer(POTENTIOMETER_SIDECAR, POTENTIOMETER_PWM),
+		counter(FLWYHEEL_LIGHT_SENSOR_SIDECAR, FLYWHEEL_LIGHT_SENSOR_PWM)
 	{
 		GetWatchdog().SetEnabled(false);
 		myRobot.SetInvertedMotor(RobotDrive::kFrontLeftMotor, true);
@@ -47,7 +50,7 @@ UltimateAscent::UltimateAscent(void):
 		stick1.SetAxisChannel(Joystick::kTwistAxis, 3);
 		stick1.SetAxisChannel(Joystick::kThrottleAxis, 4);
 		flywheelSpeed.Enable();
-		flywheelSpeed.SetInputRange(0, 128);
+		flywheelSpeed.SetInputRange(0, 144);
 		flywheelSpeed.SetOutputRange(0, 64);
 		compressor.Enabled();
 		leftMotorEncoder.SetDistancePerPulse(1);
@@ -141,8 +144,9 @@ void UltimateAscent::OperatorControl(void)
 			}
 			flywheelEncoder.FlywheelCounter();
 			if(flywheelTimer.Get() >= 0.125){
-				flywheelEncoder.PeriodCounter();
+				flywheelEncoder.SetRotations(counter.Get() * 8);
 				flywheelTimer.Reset();
+				counter.Reset();
 			}
 			if(gameTimer.Get() >= 119.9){
 				solenoid1.Set(true);
@@ -289,13 +293,18 @@ void UltimateAscent::Shoot() {
 	if(stick2.GetRawButton(PYRAMID_ANGLE_BUTTON)){
 		goToAngleReached = false;
 		desiredAngle = PYRAMID_ANGLE;
+		flywheelSpeed.SetSetpoint(PYRAMID_SPEED);
 	}
 	if(stick2.GetRawButton(FEEDER_ANGLE_BUTTON)){
 		goToAngleReached = false;
 		desiredAngle = FEEDER_ANGLE;
+		flywheelSpeed.SetSetpoint(FEEDER_SPEED);
 	}
 	if (goToAngleReached == false){
 		goToAngleReached = GoToAngle(desiredAngle);
+	}
+	if (stick2.GetRawButton(ADJ_BUTTON)){
+		flywheelSpeed.SetSetpoint(((stick2.GetThrottle() - 1) / -2) * 144);
 	}
 	if(stowOn){
 		goToAngleReached = true;
@@ -357,18 +366,23 @@ void UltimateAscent::Shoot() {
 		flywheelState = false;
 	}
 	// Set to speed of throttle on Joystick 2
-	if (flywheelState){
-		if (stick2.GetRawButton(ADJ_BUTTON)) {
-			flywheelMotor.Set((stick2.GetRawAxis(3) - 1) / -2);
-		}
-		else {
-			flywheelMotor.Set(1);
-		}
+	if (!flywheelState){
+//		if (stick2.GetRawButton(ADJ_BUTTON)) {
+//			flywheelMotor.Set((stick2.GetRawAxis(3) - 1) / -2);
+//		}
+//		else {
+//			flywheelMotor.Set(1);
+//		}
+//	
+		flywheelSpeed.SetSetpoint(0);
+		flywheelSpeed.SetSetpoint(((stick2.GetThrottle() - 1) / -2) * 144);
+	}
+	else{
 		
 	}
-	else {
-		flywheelMotor.Set(0);
-	}
+//	else {
+//		flywheelMotor.Set(0);
+//	}
 }
 
 // Functions for the shooter solenoids
