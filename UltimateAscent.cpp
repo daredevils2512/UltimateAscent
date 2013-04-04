@@ -2,10 +2,10 @@
 #include <cmath>
 #include "UltimateAscent.h"
 
-const double UltimateAscent::PYRAMID_ANGLE = 19.5;
-const double UltimateAscent::FEEDER_ANGLE = 12;
-const float UltimateAscent::PYRAMID_SPEED = 53.858;
-const float UltimateAscent::FEEDER_SPEED = 84.375;
+const double UltimateAscent::PYRAMID_ANGLE = 17.6;
+const double UltimateAscent::FEEDER_ANGLE = 17.6;
+const float UltimateAscent::PYRAMID_SPEED = 90;
+const float UltimateAscent::FEEDER_SPEED = 144;
 const double UltimateAscent::LAUNCHER_WAIT_TIME = 0.25;
 
 UltimateAscent::UltimateAscent(void):
@@ -60,22 +60,28 @@ UltimateAscent::UltimateAscent(void):
 
 
 void UltimateAscent::Autonomous(void)
-	{		
+	{
+	flywheelTimer.Start();
+	counter.Start();
+	flywheelSpeed.Enable();
 		if (IsAutonomous ()) {
 			// autonAngle is the angle from which we shoot
 			// angleStop is for when we shoot the first frisbee
-			bool angleStop = false;
+//			bool angleStop = false;
 			double autonAngle;
+			double currentCounter;
+			double previousCounter;
+			double previousCounter2;
 			leftMotorEncoder.Start();
 			leftMotorEncoder.Reset();
 			rightMotorEncoder.Start();
 			rightMotorEncoder.Reset();
 			// Determines autonAngle based on joystick 2's throttle
 			if(stick2.GetRawAxis(3) > 0) {
-				autonAngle = 19.5;
+				autonAngle = 17;
 			}
 			else {
-				autonAngle = 20.8;
+				autonAngle = 19.3;
 			}
 			// Raises shooter to allow upper to deploy
 			while (IsAutonomous() && ShooterAngle(potentiometer.GetAverageVoltage()) > 12.4){
@@ -84,25 +90,41 @@ void UltimateAscent::Autonomous(void)
 			}
 			// Lowers shooter to the Autonomous shooting angle
 			while (IsAutonomous() && ShooterAngle(potentiometer.GetAverageVoltage()) < autonAngle){
-				if(angleStop == false && ShooterAngle(potentiometer.GetAverageVoltage()) > autonAngle - 1) {
-					shooterAngleMotor.Set(Relay::kOff);
-					AutonomousShoot();
-					angleStop = true;
-					Wait(.1);
+//				if(angleStop == false && ShooterAngle(potentiometer.GetAverageVoltage()) > autonAngle - 1) {
+//					shooterAngleMotor.Set(Relay::kOff);
+//					AutonomousShoot();
+//					angleStop = true;
+//					Wait(1.5);
+//				}
+				if(flywheelTimer.Get() >= 0.125){
+					currentCounter = counter.Get() * 8;
+					flywheelEncoder.SetRotations(static_cast<int>((previousCounter2 * 0.1) + (previousCounter * 0.3) + (currentCounter * 0.6)));
+					previousCounter2 = previousCounter;
+					previousCounter = currentCounter;
+					flywheelTimer.Reset();
+					counter.Reset();
 				}
 				shooterAngleMotor.Set(Relay::kForward);
 				flywheelSpeed.SetSetpoint(PYRAMID_SPEED);
 				SmartDashboard::PutNumber("Potentiometer",ShooterAngle(potentiometer.GetAverageVoltage()));
 			}
 			shooterAngleMotor.Set(Relay::kOff);
-			
+			flywheelEncoder.SetRotations(40);
 			// Shoots 3 frisbees, actuates the solenoids 4 times in case of a jam
-			for (int i = 0; i < 3; i++) {
-				/*if(i=0) {
+			for (int i = 0; i < 4; i++) {
+				if(i == 0) {
 					Wait(1);
-				}*/
+				}
+//				if(flywheelTimer.Get() >= 0.125){
+//					currentCounter = counter.Get() * 8;
+//					flywheelEncoder.SetRotations(static_cast<int>((previousCounter2 * 0.1) + (previousCounter * 0.3) + (currentCounter * 0.6)));
+//					previousCounter2 = previousCounter;
+//					previousCounter = currentCounter;
+//					flywheelTimer.Reset();
+//					counter.Reset();
+//				}
 				AutonomousShoot();
-				if (i != 2) {
+				if (i != 3) {
 					Wait(1.5);
 				}
 			}
@@ -133,6 +155,8 @@ void UltimateAscent::OperatorControl(void)
 		leftMotorEncoder.Start();
 		gameTimer.Start();
 		timer.Start();
+		flywheelTimer.Reset();
+		counter.Reset();
 		flywheelTimer.Start();
 		counter.Start();
 		flywheelSpeed.Enable();
