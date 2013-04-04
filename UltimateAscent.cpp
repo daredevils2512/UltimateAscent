@@ -30,6 +30,7 @@ UltimateAscent::UltimateAscent(void):
 		scoopSolenoid2(SCOOP_SOLENOID2_SIDECAR, SCOOP_SOLENOID2_PWM),
 		launcherIn(LAUNCHER_IN_SIDECAR, LAUNCHER_IN_PWM),
 		launcherOut(LAUNCHER_OUT_SIDECAR, LAUNCHER_OUT_PWM),
+		counter(FLWYHEEL_LIGHT_SENSOR_SIDECAR, FLYWHEEL_LIGHT_SENSOR_PWM),
 		flywheelLightSensor(FLWYHEEL_LIGHT_SENSOR_SIDECAR, FLYWHEEL_LIGHT_SENSOR_PWM),
 		frisbeeLightSensor(FRISBEE_LIGHT_SENSOR_SIDECAR, FRISBEE_LIGHT_SENSOR_PWM),
 		flywheelEncoder(flywheelLightSensor),
@@ -37,19 +38,19 @@ UltimateAscent::UltimateAscent(void):
 		rightMotorEncoder(RIGHT_MOTOR_ENCODER_PWM_A, RIGHT_MOTOR_ENCODER_PWM_B),
 		stopwatch(),
 		pidOutput(flywheelMotor),
-		flywheelSpeed(0.750625, 0.03852941, 0, &flywheelEncoder, &pidOutput, 0.125),
+		flywheelSpeed(0.750625, 0.03852941, 0, &flywheelEncoder, &pidOutput),
+//		flywheelSpeed(1, 0, 0, &flywheelEncoder, &pidOutput, 0.125),
 		myRobot(&frontLeftMotor, &rearLeftMotor, &frontRightMotor, &rearRightMotor),
 		stick1(1),
 		stick2(2),
-		potentiometer(POTENTIOMETER_SIDECAR, POTENTIOMETER_PWM),
-		counter(FLWYHEEL_LIGHT_SENSOR_SIDECAR, FLYWHEEL_LIGHT_SENSOR_PWM)
+		potentiometer(POTENTIOMETER_SIDECAR, POTENTIOMETER_PWM)
 	{
 		GetWatchdog().SetEnabled(false);
 		myRobot.SetInvertedMotor(RobotDrive::kFrontLeftMotor, true);
 		myRobot.SetExpiration(0.1);
 		stick1.SetAxisChannel(Joystick::kTwistAxis, 3);
 		stick1.SetAxisChannel(Joystick::kThrottleAxis, 4);
-		flywheelSpeed.Enable();
+//		flywheelSpeed.Enable();
 		flywheelSpeed.SetInputRange(0, 144);
 		flywheelSpeed.SetOutputRange(0, 64);
 		compressor.Enabled();
@@ -79,7 +80,7 @@ void UltimateAscent::Autonomous(void)
 			}
 			// Raises shooter to allow upper to deploy
 			while (IsAutonomous() && ShooterAngle(potentiometer.GetAverageVoltage()) > 12.4){
-				shooterAngleMotor.Set(Relay::kForward);
+				shooterAngleMotor.Set(Relay::kReverse);
 				SmartDashboard::PutNumber("Potentiometer",ShooterAngle(potentiometer.GetAverageVoltage()));
 			}
 			// Lowers shooter to the Autonomous shooting angle
@@ -90,8 +91,8 @@ void UltimateAscent::Autonomous(void)
 					angleStop = true;
 					Wait(.1);
 				}
-				shooterAngleMotor.Set(Relay::kReverse);
-				flywheelSpeed.SetSetpoint(108);
+				shooterAngleMotor.Set(Relay::kForward);
+				flywheelSpeed.SetSetpoint(PYRAMID_SPEED);
 				SmartDashboard::PutNumber("Potentiometer",ShooterAngle(potentiometer.GetAverageVoltage()));
 			}
 			shooterAngleMotor.Set(Relay::kOff);
@@ -126,14 +127,28 @@ void UltimateAscent::Autonomous(void)
 
 void UltimateAscent::OperatorControl(void)
 	{
+		static int previousCounter2 = 0;
+		static int previousCounter = 0;
+		static int currentCounter = 0;
+		static int cycles = 0;
 		leftMotorEncoder.Start();
 		gameTimer.Start();
 		timer.Start();
 		flywheelTimer.Start();
+		counter.Start();
 		while (IsOperatorControl())
 		{
+			cycles++;
 			Drive();
 			Scoop();
+//			if(flywheelTimer.Get() >= 0.125){
+//				currentCounter = counter.Get() * 8;
+//				flywheelEncoder.SetRotations(static_cast<int>((previousCounter2 * 0.1) + (previousCounter * 0.3) + (currentCounter * 0.6)));
+//				previousCounter2 = previousCounter;
+//				previousCounter = currentCounter;
+//				flywheelTimer.Reset();
+//				counter.Reset();
+//			}
 			Shoot();
 			// Run the compressor until it reaches a certain pressure
 			if ( !compressor.GetPressureSwitchValue()){ 
@@ -142,8 +157,11 @@ void UltimateAscent::OperatorControl(void)
 			else{
 				compressor.Stop();
 			}
-			flywheelEncoder.FlywheelCounter();
 			if(flywheelTimer.Get() >= 0.125){
+//				currentCounter = counter.Get() * 8;
+//				flywheelEncoder.SetRotations(static_cast<int>((previousCounter2 * 0.1) + (previousCounter * 0.3) + (currentCounter * 0.6)));
+//				previousCounter2 = previousCounter;
+//				previousCounter = currentCounter;
 				flywheelEncoder.SetRotations(counter.Get() * 8);
 				flywheelTimer.Reset();
 				counter.Reset();
@@ -154,13 +172,13 @@ void UltimateAscent::OperatorControl(void)
 				solenoid3.Set(true);
 				solenoid4.Set(false);
 			}
-			if(timer.Get() >= 1){
-				SmartDashboard::PutNumber("Potentiometer",ShooterAngle(potentiometer.GetAverageVoltage()));
-				SmartDashboard::PutNumber("Fly Wheel RPS", flywheelEncoder.GetRate());
-				SmartDashboard::PutNumber("Drive Encoder", leftMotorEncoder.GetRaw());
+			if(timer.Get() >= .125){
+//				SmartDashboard::PutNumber("Potentiometer",ShooterAngle(potentiometer.GetAverageVoltage()));
+				SmartDashboard::PutNumber("FlyWheel RPS", flywheelEncoder.GetRate());
+				SmartDashboard::PutNumber("Cycles", cycles);
+//				SmartDashboard::PutNumber("Drive Encoder", leftMotorEncoder.GetRaw());
 				timer.Reset();
 			}
-			Wait(0.005);
 		}
 	}
 
@@ -268,17 +286,17 @@ void UltimateAscent::Scoop(){
 }
 
 void UltimateAscent::Shoot() {
-	static bool flywheelState = true;
+//	static bool flywheelState = true;
 	static bool stowOn = false;
 	static bool goToAngleReached = true;
 	static float desiredAngle = 0;
 	// changes shooting angle
 	if (stick2.GetRawButton(ANGLE_UP_BUTTON) && ShooterAngle(potentiometer.GetAverageVoltage()) >= 10){
-		shooterAngleMotor.Set(Relay::kForward);
+		shooterAngleMotor.Set(Relay::kReverse);
 		goToAngleReached = true;
 	}
 	else if (stick2.GetRawButton(ANGLE_DOWN_BUTTON)  && ShooterAngle(potentiometer.GetAverageVoltage()) <= 22.47){
-		shooterAngleMotor.Set(Relay::kReverse);
+		shooterAngleMotor.Set(Relay::kForward);
 		goToAngleReached = true;
 	}
 //	else if ((stick1.GetRawButton(STOW_BUTTON_1) || stick2.GetRawButton(STOW_BUTTON_2)) && ShooterAngle(potentiometer.GetAverageVoltage()) <= 22.47) {
@@ -300,16 +318,17 @@ void UltimateAscent::Shoot() {
 		desiredAngle = FEEDER_ANGLE;
 		flywheelSpeed.SetSetpoint(FEEDER_SPEED);
 	}
-	if (goToAngleReached == false){
-		goToAngleReached = GoToAngle(desiredAngle);
-	}
+//	if (goToAngleReached == false){
+//		goToAngleReached = GoToAngle(desiredAngle);
+//	}
 	if (stick2.GetRawButton(ADJ_BUTTON)){
-		flywheelSpeed.SetSetpoint(((stick2.GetThrottle() - 1) / -2) * 144);
+//		flywheelSpeed.SetSetpoint(((stick2.GetThrottle() - 1) / -2) * 144);
+		flywheelMotor.Set(1);
 	}
 	if(stowOn){
 		goToAngleReached = true;
 		if(ShooterAngle(potentiometer.GetAverageVoltage()) <= 22.47){
-			shooterAngleMotor.Set(Relay::kReverse);
+			shooterAngleMotor.Set(Relay::kForward);
 		}
 		else{
 			stowOn = false;
@@ -360,13 +379,17 @@ void UltimateAscent::Shoot() {
 	
 	// Turn flywheels on and off
 	if (stick2.GetRawButton(FLYWHEEL_ON_BUTTON)) {
-		flywheelState = true;
+//		flywheelState = true;
+		flywheelSpeed.Enable();
+		flywheelSpeed.SetSetpoint(FEEDER_SPEED);
 	}
 	else if (stick2.GetRawButton(FLYWHEEL_OFF_BUTTON)) {
-		flywheelState = false;
+//		flywheelState = false;
+		flywheelSpeed.SetSetpoint(0);
+		flywheelSpeed.Disable();
 	}
 	// Set to speed of throttle on Joystick 2
-	if (!flywheelState){
+//	if (!flywheelState){
 //		if (stick2.GetRawButton(ADJ_BUTTON)) {
 //			flywheelMotor.Set((stick2.GetRawAxis(3) - 1) / -2);
 //		}
@@ -374,12 +397,11 @@ void UltimateAscent::Shoot() {
 //			flywheelMotor.Set(1);
 //		}
 //	
-		flywheelSpeed.SetSetpoint(0);
-		flywheelSpeed.SetSetpoint(((stick2.GetThrottle() - 1) / -2) * 144);
-	}
-	else{
-		
-	}
+//		flywheelSpeed.SetSetpoint(0);
+//	}
+//	else{
+//		flywheelSpeed.SetSetpoint(FEEDER_SPEED);
+//	}
 //	else {
 //		flywheelMotor.Set(0);
 //	}

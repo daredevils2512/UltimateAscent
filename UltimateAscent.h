@@ -130,6 +130,7 @@ class UltimateAscent : public SimpleRobot
 	Solenoid scoopSolenoid2;
 	Solenoid launcherIn;
 	Solenoid launcherOut;
+	Counter counter;
 	DigitalInput flywheelLightSensor;
 	DigitalInput frisbeeLightSensor;
 	FlywheelEncoder flywheelEncoder;
@@ -142,7 +143,6 @@ class UltimateAscent : public SimpleRobot
 	Joystick stick1;
 	Joystick stick2;
 	AnalogChannel potentiometer;
-	Counter counter;
 	
 	
 	float ConvertAxis(float input);
@@ -166,6 +166,7 @@ class UltimateAscent : public SimpleRobot
 	float ShooterAngle(float pot);
 	
 	bool GoToAngle(double desiredAngle);
+	
 public:
 	UltimateAscent(void);
 
