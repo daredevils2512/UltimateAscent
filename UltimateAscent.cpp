@@ -2,7 +2,7 @@
 #include <cmath>
 #include "UltimateAscent.h"
 
-const double UltimateAscent::PYRAMID_ANGLE = 16.5;
+const double UltimateAscent::PYRAMID_ANGLE = 19.5;
 const double UltimateAscent::FEEDER_ANGLE = 12;
 const float UltimateAscent::PYRAMID_SPEED = 53.858;
 const float UltimateAscent::FEEDER_SPEED = 84.375;
@@ -38,8 +38,7 @@ UltimateAscent::UltimateAscent(void):
 		rightMotorEncoder(RIGHT_MOTOR_ENCODER_PWM_A, RIGHT_MOTOR_ENCODER_PWM_B),
 		stopwatch(),
 		pidOutput(flywheelMotor),
-		flywheelSpeed(0.750625, 0.03852941, 0, &flywheelEncoder, &pidOutput),
-//		flywheelSpeed(1, 0, 0, &flywheelEncoder, &pidOutput, 0.125),
+		flywheelSpeed(0.750625, 0.03852941, 0, &flywheelEncoder, &pidOutput, 0.125),
 		myRobot(&frontLeftMotor, &rearLeftMotor, &frontRightMotor, &rearRightMotor),
 		stick1(1),
 		stick2(2),
@@ -50,7 +49,7 @@ UltimateAscent::UltimateAscent(void):
 		myRobot.SetExpiration(0.1);
 		stick1.SetAxisChannel(Joystick::kTwistAxis, 3);
 		stick1.SetAxisChannel(Joystick::kThrottleAxis, 4);
-//		flywheelSpeed.Enable();
+		flywheelSpeed.Enable();
 		flywheelSpeed.SetInputRange(0, 144);
 		flywheelSpeed.SetOutputRange(0, 64);
 		compressor.Enabled();
@@ -73,10 +72,10 @@ void UltimateAscent::Autonomous(void)
 			rightMotorEncoder.Reset();
 			// Determines autonAngle based on joystick 2's throttle
 			if(stick2.GetRawAxis(3) > 0) {
-				autonAngle = 16.5;
+				autonAngle = 19.5;
 			}
 			else {
-				autonAngle = 17.8;
+				autonAngle = 20.8;
 			}
 			// Raises shooter to allow upper to deploy
 			while (IsAutonomous() && ShooterAngle(potentiometer.GetAverageVoltage()) > 12.4){
@@ -136,19 +135,21 @@ void UltimateAscent::OperatorControl(void)
 		timer.Start();
 		flywheelTimer.Start();
 		counter.Start();
+		flywheelSpeed.Enable();
+		flywheelSpeed.SetSetpoint(FEEDER_SPEED);
 		while (IsOperatorControl())
 		{
 			cycles++;
 			Drive();
 			Scoop();
-//			if(flywheelTimer.Get() >= 0.125){
-//				currentCounter = counter.Get() * 8;
-//				flywheelEncoder.SetRotations(static_cast<int>((previousCounter2 * 0.1) + (previousCounter * 0.3) + (currentCounter * 0.6)));
-//				previousCounter2 = previousCounter;
-//				previousCounter = currentCounter;
-//				flywheelTimer.Reset();
-//				counter.Reset();
-//			}
+			if(flywheelTimer.Get() >= 0.125){
+				currentCounter = counter.Get() * 8;
+				flywheelEncoder.SetRotations(static_cast<int>((previousCounter2 * 0.1) + (previousCounter * 0.3) + (currentCounter * 0.6)));
+				previousCounter2 = previousCounter;
+				previousCounter = currentCounter;
+				flywheelTimer.Reset();
+				counter.Reset();
+			}
 			Shoot();
 			// Run the compressor until it reaches a certain pressure
 			if ( !compressor.GetPressureSwitchValue()){ 
@@ -158,11 +159,10 @@ void UltimateAscent::OperatorControl(void)
 				compressor.Stop();
 			}
 			if(flywheelTimer.Get() >= 0.125){
-//				currentCounter = counter.Get() * 8;
-//				flywheelEncoder.SetRotations(static_cast<int>((previousCounter2 * 0.1) + (previousCounter * 0.3) + (currentCounter * 0.6)));
-//				previousCounter2 = previousCounter;
-//				previousCounter = currentCounter;
-				flywheelEncoder.SetRotations(counter.Get() * 8);
+				currentCounter = counter.Get() * 8;
+				flywheelEncoder.SetRotations(static_cast<int>((previousCounter2 * 0.1) + (previousCounter * 0.3) + (currentCounter * 0.6)));
+				previousCounter2 = previousCounter;
+				previousCounter = currentCounter;
 				flywheelTimer.Reset();
 				counter.Reset();
 			}
@@ -173,9 +173,9 @@ void UltimateAscent::OperatorControl(void)
 				solenoid4.Set(false);
 			}
 			if(timer.Get() >= .125){
-//				SmartDashboard::PutNumber("Potentiometer",ShooterAngle(potentiometer.GetAverageVoltage()));
+				SmartDashboard::PutNumber("Potentiometer",ShooterAngle(potentiometer.GetAverageVoltage()));
 				SmartDashboard::PutNumber("FlyWheel RPS", flywheelEncoder.GetRate());
-				SmartDashboard::PutNumber("Cycles", cycles);
+//				SmartDashboard::PutNumber("Cycles", cycles);
 //				SmartDashboard::PutNumber("Drive Encoder", leftMotorEncoder.GetRaw());
 				timer.Reset();
 			}
@@ -311,19 +311,22 @@ void UltimateAscent::Shoot() {
 	if(stick2.GetRawButton(PYRAMID_ANGLE_BUTTON)){
 		goToAngleReached = false;
 		desiredAngle = PYRAMID_ANGLE;
+		flywheelSpeed.Enable();
 		flywheelSpeed.SetSetpoint(PYRAMID_SPEED);
 	}
 	if(stick2.GetRawButton(FEEDER_ANGLE_BUTTON)){
 		goToAngleReached = false;
 		desiredAngle = FEEDER_ANGLE;
+		flywheelSpeed.Enable();
 		flywheelSpeed.SetSetpoint(FEEDER_SPEED);
 	}
-//	if (goToAngleReached == false){
-//		goToAngleReached = GoToAngle(desiredAngle);
-//	}
+	if (goToAngleReached == false){
+		goToAngleReached = GoToAngle(desiredAngle);
+	}
 	if (stick2.GetRawButton(ADJ_BUTTON)){
-//		flywheelSpeed.SetSetpoint(((stick2.GetThrottle() - 1) / -2) * 144);
-		flywheelMotor.Set(1);
+		flywheelSpeed.Enable();
+		flywheelSpeed.SetSetpoint(((stick2.GetThrottle() - 1) / -2) * 144);
+//		flywheelMotor.Set(1);
 	}
 	if(stowOn){
 		goToAngleReached = true;
@@ -442,24 +445,27 @@ float UltimateAscent::ShooterAngle(float pot)
 }
 
 bool UltimateAscent::GoToAngle(double desiredAngle) {
-	static bool belowDesiredAngle = false;
+	static bool aboveDesiredAngle = false;
 	static bool reachedDesiredAngle = false;
 	if (ShooterAngle(potentiometer.GetAverageVoltage()) > desiredAngle + 0.5){
-		belowDesiredAngle = false;
+		aboveDesiredAngle = false;
 	}
 	else if (ShooterAngle(potentiometer.GetAverageVoltage()) < desiredAngle - 0.5) {
-		belowDesiredAngle = true;
+		aboveDesiredAngle = true;
 	}
-	if(belowDesiredAngle){
-		shooterAngleMotor.Set(Relay::kReverse);
-	}
-	else if(belowDesiredAngle = false){
+	if(aboveDesiredAngle){
 		shooterAngleMotor.Set(Relay::kForward);
 	}
+	else if(aboveDesiredAngle == false){
+		shooterAngleMotor.Set(Relay::kReverse);
+	}
 	if (ShooterAngle(potentiometer.GetAverageVoltage()) < desiredAngle + 0.5 
-			&& ShooterAngle(potentiometer.GetAverageVoltage()) < desiredAngle - 0.5) {
+			&& ShooterAngle(potentiometer.GetAverageVoltage()) > desiredAngle - 0.5) {
 		shooterAngleMotor.Set(Relay::kOff);
 		reachedDesiredAngle = true;
+	}
+	else {
+		reachedDesiredAngle = false;
 	}
 	return reachedDesiredAngle;
 }
