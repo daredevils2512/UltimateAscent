@@ -135,35 +135,37 @@ void UltimateAscent::Autonomous(void)
 			rightMotorEncoder.Reset();
 			leftMotorEncoder.Reset();
 			// Turn away from pyramid
-			while(rightMotorEncoder.GetRaw() <= 350 && IsAutonomous()) {
+			while(rightMotorEncoder.GetRaw() <= 530 && IsAutonomous()) {
 				myRobot.TankDrive(.5, .5, false);
-				SmartDashboard::PutNumber("Drive Encoder", rightMotorEncoder.GetRaw());
-			}
-/*			rightMotorEncoder.Reset();
-			leftMotorEncoder.Reset();
-			while(rightMotorEncoder.GetRaw() >= -1900 && IsAutonomous()) {
-				myRobot.TankDrive(.5,-.5,false);
 				SmartDashboard::PutNumber("Drive Encoder", rightMotorEncoder.GetRaw());
 			}
 			rightMotorEncoder.Reset();
 			leftMotorEncoder.Reset();
-			while(rightMotorEncoder.GetRaw() <= 175 && IsAutonomous()) {
-				myRobot.TankDrive(.5, .5, false);
+			//Back up to the middle line
+			while(rightMotorEncoder.GetRaw() <= 1750 && IsAutonomous()) {
+				myRobot.TankDrive(-.5,.5,false);
+				SmartDashboard::PutNumber("Drive Encoder", rightMotorEncoder.GetRaw());
+			}
+			rightMotorEncoder.Reset();
+			leftMotorEncoder.Reset();
+			// turn to face frisbees
+			while(rightMotorEncoder.GetRaw() >= -255 && IsAutonomous()) {
+				myRobot.TankDrive(-.5, -.5, false);
 				SmartDashboard::PutNumber("Drive Encoder", rightMotorEncoder.GetRaw());
 			}
 			scoopSolenoid1.Set(false);
 			scoopSolenoid2.Set(true);
 			elevatorMotor.Set(-0.8);
 			brushMotor.Set(1);
-			while (IsAutonomous() && ShooterAngle(potentiometer.GetAverageVoltage()) > 14){
-				shooterAngleMotor.Set(Relay::kReverse);
-				SmartDashboard::PutNumber("Potentiometer",ShooterAngle(potentiometer.GetAverageVoltage()));
-			}
+//			while (IsAutonomous() && ShooterAngle(potentiometer.GetAverageVoltage()) > 14){
+//				shooterAngleMotor.Set(Relay::kReverse);
+//				SmartDashboard::PutNumber("Potentiometer",ShooterAngle(potentiometer.GetAverageVoltage()));
+//			}
 			// Drive straight away
 //			while(leftMotorEncoder.GetRaw() >= -960 && IsAutonomous()) {
 //				myRobot.TankDrive(.5, .5, false);
 //			}
-*/		}
+		}
 	}
 
 
@@ -223,7 +225,7 @@ void UltimateAscent::OperatorControl(void)
 			if(timer.Get() >= .125){
 				SmartDashboard::PutNumber("Potentiometer",ShooterAngle(potentiometer.GetAverageVoltage()));
 				SmartDashboard::PutNumber("FlyWheel RPS", flywheelEncoder.GetRate());
-//				SmartDashboard::PutNumber("Right Drive Encoder", rightMotorEncoder.GetRaw());
+				SmartDashboard::PutNumber("Right Drive Encoder", rightMotorEncoder.GetRaw());
 //				SmartDashboard::PutNumber("Cycles", cycles);
 //				SmartDashboard::PutNumber("Drive Encoder", leftMotorEncoder.GetRaw());
 				timer.Reset();
