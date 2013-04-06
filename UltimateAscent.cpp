@@ -77,12 +77,7 @@ void UltimateAscent::Autonomous(void)
 			rightMotorEncoder.Start();
 			rightMotorEncoder.Reset();
 			// Determines autonAngle based on joystick 2's throttle
-			if(stick2.GetRawAxis(3) > 0) {
-				autonAngle = 17;
-			}
-			else {
-				autonAngle = 19.3;
-			}
+			autonAngle = 19.2;
 			// Raises shooter to allow upper to deploy
 			while (IsAutonomous() && ShooterAngle(potentiometer.GetAverageVoltage()) > 12.4){
 				shooterAngleMotor.Set(Relay::kReverse);
@@ -153,10 +148,12 @@ void UltimateAscent::Autonomous(void)
 				myRobot.TankDrive(-.5, -.5, false);
 				SmartDashboard::PutNumber("Drive Encoder", rightMotorEncoder.GetRaw());
 			}
-			scoopSolenoid1.Set(false);
-			scoopSolenoid2.Set(true);
-			elevatorMotor.Set(-0.8);
-			brushMotor.Set(1);
+			rightMotorEncoder.Reset();
+			leftMotorEncoder.Reset();
+//			scoopSolenoid1.Set(false);
+//			scoopSolenoid2.Set(true);
+//			elevatorMotor.Set(-0.8);
+//			brushMotor.Set(1);
 //			while (IsAutonomous() && ShooterAngle(potentiometer.GetAverageVoltage()) > 14){
 //				shooterAngleMotor.Set(Relay::kReverse);
 //				SmartDashboard::PutNumber("Potentiometer",ShooterAngle(potentiometer.GetAverageVoltage()));
