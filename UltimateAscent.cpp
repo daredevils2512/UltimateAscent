@@ -2,6 +2,7 @@
 #include <cmath>
 #include "UltimateAscent.h"
 
+//TODO: move to header file?
 const double UltimateAscent::PYRAMID_ANGLE = 17.6;
 const double UltimateAscent::FEEDER_ANGLE = 17.6;
 const float UltimateAscent::PYRAMID_SPEED = 90;
@@ -168,9 +169,9 @@ void UltimateAscent::Autonomous(void)
 
 void UltimateAscent::OperatorControl(void)
 	{
-		static int previousCounter2 = 0;
-		static int previousCounter = 0;
-		static int currentCounter = 0;
+		// flywheelRPSCounter[0] is the current
+		// flywheelRPSCounter[2] is the least current
+		static int flywheelRPSCounter[] = {0, 0, 0};
 		static int cycles = 0;
 		leftMotorEncoder.Start();
 		leftMotorEncoder.Reset();
@@ -189,11 +190,15 @@ void UltimateAscent::OperatorControl(void)
 			cycles++;
 			Drive();
 			Scoop();
-			if(flywheelTimer.Get() >= 0.125){
-				currentCounter = counter.Get() * 8;
-				flywheelEncoder.SetRotations(static_cast<int>((previousCounter2 * 0.1) + (previousCounter * 0.3) + (currentCounter * 0.6)));
-				previousCounter2 = previousCounter;
-				previousCounter = currentCounter;
+			// Weighted averaging for PID
+			if (flywheelTimer.Get() >= 0.125) {
+				flywheelRPSCounter[0] = counter.Get() * 8;
+				flywheelEncoder.SetRotations(static_cast<int>((flywheelRPSCounter[2] * 0.1) + (flywheelRPSCounter[1] * 0.3) + (flywheelRPSCounter[0] * 0.6)));
+				// For loops allows for expansion of averaging array length
+				//TODO: Check work
+				for (int i = sizeof flywheelRPSCounter; i > 0; i--) {
+					flywheelRPSCounter[i - 1] = flywheelRPSCounter[i - 2];
+				}
 				flywheelTimer.Reset();
 				counter.Reset();
 			}
@@ -205,11 +210,12 @@ void UltimateAscent::OperatorControl(void)
 			else{
 				compressor.Stop();
 			}
-			if(flywheelTimer.Get() >= 0.125){
-				currentCounter = counter.Get() * 8;
-				flywheelEncoder.SetRotations(static_cast<int>((previousCounter2 * 0.1) + (previousCounter * 0.3) + (currentCounter * 0.6)));
-				previousCounter2 = previousCounter;
-				previousCounter = currentCounter;
+			if (flywheelTimer.Get() >= 0.125) {
+				flywheelRPSCounter[0] = counter.Get() * 8;
+				flywheelEncoder.SetRotations(static_cast<int>((flywheelRPSCounter[2] * 0.1) + (flywheelRPSCounter[1] * 0.3) + (flywheelRPSCounter[0] * 0.6)));
+				for (int i = sizeof flywheelRPSCounter; i > 0; i--) {
+					flywheelRPSCounter[i - 1] = flywheelRPSCounter[i - 2];
+				}
 				flywheelTimer.Reset();
 				counter.Reset();
 			}
