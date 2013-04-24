@@ -64,7 +64,7 @@ class UltimateAscent : public SimpleRobot
 	static const UINT32 RIGHT_MOTOR_ENCODER_PWM_B = 2;
 	//Shooter Angle Motor
 	static const UINT8 SHOOTER_ANGLE_MOTOR_SIDECAR = DIGITAL_SIDECAR_1;
-	static const UINT32 SHOOTER_ANGLE_MOTOR_PWM = 2;
+	static const UINT32 SHOOTER_ANGLE_MOTOR_PWM = 4;
 	// Launcher In
 	static const UINT8 LAUNCHER_IN_SIDECAR = SOLENOID_SIDECAR_1;
 	static const UINT32 LAUNCHER_IN_PWM = 1;
