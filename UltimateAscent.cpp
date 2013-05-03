@@ -2,7 +2,7 @@
 #include <cmath>
 #include "UltimateAscent.h"
 
-const double UltimateAscent::PYRAMID_ANGLE = 17.6;
+const double UltimateAscent::PYRAMID_ANGLE = 18.65;
 const double UltimateAscent::FEEDER_ANGLE = 17.6;
 const float UltimateAscent::PYRAMID_SPEED = 90;
 const float UltimateAscent::FEEDER_SPEED = 144;
@@ -237,9 +237,11 @@ void UltimateAscent::Test() {
 // Desensitize Joystick
 float UltimateAscent::ConvertAxis(float input){
 	if (input >= 0.05) {
+//		return input * 1.5;
 		return pow((input), 3);
 	}
 	else if (input <= -0.05) {
+//		return input * 1.5;
 		return (pow((input), 3));
 	}
 	else {
