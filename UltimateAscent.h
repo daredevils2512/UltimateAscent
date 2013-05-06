@@ -103,14 +103,31 @@ class UltimateAscent : public SimpleRobot
 	static const UINT32 PYRAMID_ANGLE_BUTTON = 4;
 	static const UINT32 FEEDER_ANGLE_BUTTON = 5;
 	
-	
 	static const double PYRAMID_ANGLE;
 	static const double FEEDER_ANGLE;
 	static const float PYRAMID_SPEED;
 	static const float FEEDER_SPEED;
 	// Time that the launcher stays out
 	static const double LAUNCHER_WAIT_TIME;
+	
 	//VARIABLES
+	int flywheelRPSCounter[];
+	int cycles;
+	bool scoopState;
+	//Rising edge detector variables for Toggle Button and Frisbee Light Sensor
+	bool previousScoopButton;
+	bool previousFrisbeeLightValue;
+	bool stowOn;
+	bool goToAngleReached;
+	float desiredAngle;
+	bool aboveDesiredAngle;
+	bool reachedDesiredAngle;
+	// waitForLeaving is used as a buffer between shots
+	bool waitForLeaving;
+	bool priorTriggerButton;
+
+	
+	
 	Timer gameTimer;
 	Timer timer;
 	Timer flywheelTimer;

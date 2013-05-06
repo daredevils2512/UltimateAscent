@@ -11,6 +11,17 @@ const double UltimateAscent::LAUNCHER_WAIT_TIME = 0.25;
 
 UltimateAscent::UltimateAscent(void):
 		// these must be initialized in the same order as they are declared in the header file.
+		cycles(0),
+		scoopState(false),
+		previousScoopButton(false),
+		previousFrisbeeLightValue(false),
+		stowOn(false),
+		goToAngleReached(true),
+		desiredAngle(0),
+		aboveDesiredAngle(false),
+		reachedDesiredAngle(false),
+		waitForLeaving(true),
+		priorTriggerButton(false),
 		gameTimer(),
 		timer(),
 		flywheelTimer(),
@@ -172,7 +183,6 @@ void UltimateAscent::OperatorControl(void)
 		// flywheelRPSCounter[0] is the current
 		// flywheelRPSCounter[2] is the least current
 		static vector<int> flywheelRPSCounter(3);
-		static int cycles = 0;
 		leftMotorEncoder.Start();
 		leftMotorEncoder.Reset();
 		rightMotorEncoder.Start();
@@ -276,10 +286,6 @@ void UltimateAscent::Drive(){
 }
 
 void UltimateAscent::Scoop(){
-	static bool scoopState = false;
-	//Rising edge detector variables for Toggle Button and Frisbee Light Sensor
-	static bool previousScoopButton = false;
-	static bool previousFrisbeeLightValue = false;
 	bool currentFrisbeeLightValue = frisbeeLightSensor.Get();
 	bool currentScoopButton = stick1.GetRawButton(SCOOP_TOGGLE_BUTTON);
 	
@@ -331,9 +337,6 @@ void UltimateAscent::Scoop(){
 
 void UltimateAscent::Shoot() {
 //	static bool flywheelState = true;
-	static bool stowOn = false;
-	static bool goToAngleReached = true;
-	static float desiredAngle = 0;
 	// changes shooting angle
 	if (stick2.GetRawButton(ANGLE_UP_BUTTON) && ShooterAngle(potentiometer.GetAverageVoltage()) >= 10){
 		shooterAngleMotor.Set(Relay::kReverse);
@@ -383,11 +386,9 @@ void UltimateAscent::Shoot() {
 		}
 	}
 	
-	// waitForLeaving is used as a buffer between shots
-	static bool waitForLeaving = true;
+
 	// Both are used for rising edge detector
 	bool triggerButton = false;
-	static bool priorTriggerButton = false;
 	
 	//Actuators
 	if (stick2.GetRawButton(FIRE_BUTTON) && !priorTriggerButton) {
@@ -489,8 +490,7 @@ float UltimateAscent::ShooterAngle(float pot)
 }
 
 bool UltimateAscent::GoToAngle(double desiredAngle) {
-	static bool aboveDesiredAngle = false;
-	static bool reachedDesiredAngle = false;
+
 	if (ShooterAngle(potentiometer.GetAverageVoltage()) > desiredAngle + 0.5){
 		aboveDesiredAngle = false;
 	}
