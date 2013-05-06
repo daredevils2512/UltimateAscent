@@ -22,6 +22,7 @@ UltimateAscent::UltimateAscent(void):
 		reachedDesiredAngle(false),
 		waitForLeaving(true),
 		priorTriggerButton(false),
+		flywheelRPSCounter(3),
 		gameTimer(),
 		timer(),
 		flywheelTimer(),
@@ -180,9 +181,6 @@ void UltimateAscent::Autonomous(void)
 
 void UltimateAscent::OperatorControl(void)
 	{
-		// flywheelRPSCounter[0] is the current
-		// flywheelRPSCounter[2] is the least current
-		static vector<int> flywheelRPSCounter(3);
 		leftMotorEncoder.Start();
 		leftMotorEncoder.Reset();
 		rightMotorEncoder.Start();

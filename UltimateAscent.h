@@ -111,7 +111,6 @@ class UltimateAscent : public SimpleRobot
 	static const double LAUNCHER_WAIT_TIME;
 	
 	//VARIABLES
-	int flywheelRPSCounter[];
 	int cycles;
 	bool scoopState;
 	//Rising edge detector variables for Toggle Button and Frisbee Light Sensor
@@ -125,7 +124,9 @@ class UltimateAscent : public SimpleRobot
 	// waitForLeaving is used as a buffer between shots
 	bool waitForLeaving;
 	bool priorTriggerButton;
-
+	// flywheelRPSCounter[0] is the current
+	// flywheelRPSCounter[2] is the least current
+	vector<int> flywheelRPSCounter;
 	
 	
 	Timer gameTimer;
