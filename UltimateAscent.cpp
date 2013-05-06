@@ -171,7 +171,7 @@ void UltimateAscent::OperatorControl(void)
 	{
 		// flywheelRPSCounter[0] is the current
 		// flywheelRPSCounter[2] is the least current
-		static int flywheelRPSCounter[] = {0, 0, 0};
+		static vector<int> flywheelRPSCounter(3);
 		static int cycles = 0;
 		leftMotorEncoder.Start();
 		leftMotorEncoder.Reset();
@@ -194,10 +194,9 @@ void UltimateAscent::OperatorControl(void)
 			if (flywheelTimer.Get() >= 0.125) {
 				flywheelRPSCounter[0] = counter.Get() * 8;
 				flywheelEncoder.SetRotations(static_cast<int>((flywheelRPSCounter[2] * 0.1) + (flywheelRPSCounter[1] * 0.3) + (flywheelRPSCounter[0] * 0.6)));
-				// For loops allows for expansion of averaging array length
-				//TODO: Check work
-				for (int i = sizeof flywheelRPSCounter; i > 0; i--) {
-					flywheelRPSCounter[i - 1] = flywheelRPSCounter[i - 2];
+				// For loops allows for expansion of averaging vector length
+				for (int i = flywheelRPSCounter.size() - 1; i >= 0; i--) {
+					flywheelRPSCounter[i] = flywheelRPSCounter[i - 1];
 				}
 				flywheelTimer.Reset();
 				counter.Reset();
@@ -209,15 +208,6 @@ void UltimateAscent::OperatorControl(void)
 			}
 			else{
 				compressor.Stop();
-			}
-			if (flywheelTimer.Get() >= 0.125) {
-				flywheelRPSCounter[0] = counter.Get() * 8;
-				flywheelEncoder.SetRotations(static_cast<int>((flywheelRPSCounter[2] * 0.1) + (flywheelRPSCounter[1] * 0.3) + (flywheelRPSCounter[0] * 0.6)));
-				for (int i = sizeof flywheelRPSCounter; i > 0; i--) {
-					flywheelRPSCounter[i - 1] = flywheelRPSCounter[i - 2];
-				}
-				flywheelTimer.Reset();
-				counter.Reset();
 			}
 			if(gameTimer.Get() >= 119.9){
 				solenoid1.Set(true);

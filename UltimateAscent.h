@@ -1,4 +1,5 @@
 #include <WPILib.h>
+#include <vector>
 #include "FlywheelEncoder.h"
 #include "FlywheelMotor.h"
 #pragma once
