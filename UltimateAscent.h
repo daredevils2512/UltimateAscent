@@ -1,5 +1,5 @@
 #include <WPILib.h>
-#include <vector>
+#include <deque>
 #include "FlywheelEncoder.h"
 #include "FlywheelMotor.h"
 #pragma once
@@ -126,7 +126,7 @@ class UltimateAscent : public SimpleRobot
 	bool priorTriggerButton;
 	// flywheelRPSCounter[0] is the current
 	// flywheelRPSCounter[2] is the least current
-	vector<int> flywheelRPSCounter;
+	deque<int> flywheelRPSCounter;
 	
 	
 	Timer gameTimer;

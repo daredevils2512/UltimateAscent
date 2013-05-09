@@ -22,7 +22,7 @@ UltimateAscent::UltimateAscent(void):
 		reachedDesiredAngle(false),
 		waitForLeaving(true),
 		priorTriggerButton(false),
-		flywheelRPSCounter(3),
+		flywheelRPSCounter(3, 0),
 		gameTimer(),
 		timer(),
 		flywheelTimer(),
@@ -200,12 +200,9 @@ void UltimateAscent::OperatorControl(void)
 			Scoop();
 			// Weighted averaging for PID
 			if (flywheelTimer.Get() >= 0.125) {
-				flywheelRPSCounter[0] = counter.Get() * 8;
+				flywheelRPSCounter.push_back(counter.Get() * 8);
 				flywheelEncoder.SetRotations(static_cast<int>((flywheelRPSCounter[2] * 0.1) + (flywheelRPSCounter[1] * 0.3) + (flywheelRPSCounter[0] * 0.6)));
-				// For loops allows for expansion of averaging vector length
-				for (int i = flywheelRPSCounter.size() - 1; i >= 0; i--) {
-					flywheelRPSCounter[i] = flywheelRPSCounter[i - 1];
-				}
+				flywheelRPSCounter.pop_front();
 				flywheelTimer.Reset();
 				counter.Reset();
 			}
