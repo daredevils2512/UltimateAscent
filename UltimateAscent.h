@@ -113,10 +113,10 @@ class UltimateAscent : public SimpleRobot
 	Timer gameTimer;
 	Timer timer;
 	Timer flywheelTimer;
-	Talon frontLeftMotor;
-	Talon frontRightMotor;
-	Talon rearLeftMotor;
-	Talon rearRightMotor;
+	Victor frontLeftMotor;
+	Victor frontRightMotor;
+	Victor rearLeftMotor;
+	Victor rearRightMotor;
 	Talon flywheelMotor;
 	Talon brushMotor;
 	Talon elevatorMotor;

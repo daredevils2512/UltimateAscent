@@ -278,7 +278,11 @@ void UltimateAscent::Drive(){
 		solenoid4.Set(false);
 	}
 	//Drive with Mecanum Style
+	/*if (stick1.GetRawButton(12)) {
+		myRobot.MecanumDrive_Cartesian( 1, 0, twistOutput);
+	}*/
 	myRobot.MecanumDrive_Cartesian(xOutput, yOutput, twistOutput);
+	
 }
 
 void UltimateAscent::Scoop(){
