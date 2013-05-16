@@ -2,10 +2,10 @@
 #include <cmath>
 #include "UltimateAscent.h"
 
-const double UltimateAscent::PYRAMID_ANGLE = 18.65;
-const double UltimateAscent::FEEDER_ANGLE = 17.6;
-const float UltimateAscent::PYRAMID_SPEED = 90;
-const float UltimateAscent::FEEDER_SPEED = 144;
+const double UltimateAscent::PYRAMID_ANGLE = 20.4;
+const double UltimateAscent::FEEDER_ANGLE = 15.1;
+const float UltimateAscent::PYRAMID_SPEED = 75;
+const float UltimateAscent::FEEDER_SPEED = 85;
 const double UltimateAscent::LAUNCHER_WAIT_TIME = 0.25;
 
 UltimateAscent::UltimateAscent(void):
@@ -77,7 +77,7 @@ void UltimateAscent::Autonomous(void)
 			rightMotorEncoder.Start();
 			rightMotorEncoder.Reset();
 			// Determines autonAngle based on joystick 2's throttle
-			autonAngle = 19.2;
+			autonAngle = 20.4;
 			// Raises shooter to allow upper to deploy
 			while (IsAutonomous() && ShooterAngle(potentiometer.GetAverageVoltage()) > 12.4){
 				shooterAngleMotor.Set(Relay::kReverse);
@@ -191,6 +191,9 @@ void UltimateAscent::OperatorControl(void)
 			Scoop();
 			if(flywheelTimer.Get() >= 0.125){
 				currentCounter = counter.Get() * 8;
+				if (abs(currentCounter - previousCounter2) >= 50) {
+					currentCounter = static_cast<int>(flywheelSpeed.GetSetpoint());
+				}
 				flywheelEncoder.SetRotations(static_cast<int>((previousCounter2 * 0.1) + (previousCounter * 0.3) + (currentCounter * 0.6)));
 				previousCounter2 = previousCounter;
 				previousCounter = currentCounter;
@@ -207,6 +210,9 @@ void UltimateAscent::OperatorControl(void)
 			}
 			if(flywheelTimer.Get() >= 0.125){
 				currentCounter = counter.Get() * 8;
+				if (abs(currentCounter - previousCounter2) >= 50) {
+					currentCounter = static_cast<int>(flywheelSpeed.GetSetpoint());
+				}
 				flywheelEncoder.SetRotations(static_cast<int>((previousCounter2 * 0.1) + (previousCounter * 0.3) + (currentCounter * 0.6)));
 				previousCounter2 = previousCounter;
 				previousCounter = currentCounter;
@@ -223,6 +229,7 @@ void UltimateAscent::OperatorControl(void)
 				SmartDashboard::PutNumber("Potentiometer",ShooterAngle(potentiometer.GetAverageVoltage()));
 				SmartDashboard::PutNumber("FlyWheel RPS", flywheelEncoder.GetRate());
 				SmartDashboard::PutNumber("Right Drive Encoder", rightMotorEncoder.GetRaw());
+				SmartDashboard::PutNumber("PID SetPoint", (((stick2.GetThrottle() - 1) / -2) * 144));
 //				SmartDashboard::PutNumber("Cycles", cycles);
 //				SmartDashboard::PutNumber("Drive Encoder", leftMotorEncoder.GetRaw());
 				timer.Reset();
@@ -255,9 +262,13 @@ void UltimateAscent::Drive(){
 	// Joystick Axis Inputs
 	float xOutput;
 	float yOutput = ConvertAxis(stick1.GetY());
-	float twistOutput = ConvertAxis(stick1.GetTwist()) / (1.5);
+	float twistOutput = ConvertAxis(stick1.GetTwist()) / 1.5;
+	if (stick1.GetRawButton(12)) {
+		yOutput = -1;
+	}
 	if(stick1.GetRawAxis(4) < 0) {
 		xOutput = ConvertAxis(stick1.GetX()) / 2;
+		twistOutput = ConvertAxis(stick1.GetTwist()) / 2;
 	}
 	else {
 		xOutput = ConvertAxis(stick1.GetX());
@@ -278,11 +289,7 @@ void UltimateAscent::Drive(){
 		solenoid4.Set(false);
 	}
 	//Drive with Mecanum Style
-	/*if (stick1.GetRawButton(12)) {
-		myRobot.MecanumDrive_Cartesian( 1, 0, twistOutput);
-	}*/
 	myRobot.MecanumDrive_Cartesian(xOutput, yOutput, twistOutput);
-	
 }
 
 void UltimateAscent::Scoop(){

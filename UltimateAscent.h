@@ -43,7 +43,7 @@ class UltimateAscent : public SimpleRobot
 	static const UINT32 SCOOP_SOLENOID2_PWM = 6;
 	// Flywheel Light Sensor
 	static const UINT8 FLWYHEEL_LIGHT_SENSOR_SIDECAR = DIGITAL_SIDECAR_1;
-	static const UINT32 FLYWHEEL_LIGHT_SENSOR_PWM = 5;
+	static const UINT32 FLYWHEEL_LIGHT_SENSOR_PWM = 7;
 	// Flywheel Motor
 	static const UINT8 FLYWHEEL_MOTOR_SIDECAR = DIGITAL_SIDECAR_1;
 	static const UINT32 FLYWHEEL_MOTOR_PWM = 3;	
